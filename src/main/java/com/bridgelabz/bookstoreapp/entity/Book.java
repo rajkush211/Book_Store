@@ -7,7 +7,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private int id;
     private String author;
     private String nameOfBook;
     private String picPath;
@@ -16,14 +16,6 @@ public class Book {
     private String description;
 
     public Book() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAuthor() {
