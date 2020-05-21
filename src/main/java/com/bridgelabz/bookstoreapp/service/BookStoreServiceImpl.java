@@ -3,6 +3,7 @@ package com.bridgelabz.bookstoreapp.service;
 import com.bridgelabz.bookstoreapp.dto.BookDto;
 import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
+import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class BookStoreServiceImpl implements IBookStoreService  {
 
     @Autowired
     private BookStoreRepository bookStoreRepository;
+
+    @Autowired
+    private ConverterService converterService;
 
     @Override
     public void loadBookData() {
@@ -42,6 +46,8 @@ public class BookStoreServiceImpl implements IBookStoreService  {
 
     @Override
     public String addNewBook(BookDto bookDto) {
-        return null;
+        Book book = converterService.convertToBookEntity(bookDto);
+        bookStoreRepository.save(book);
+        return "Book successfully added";
     }
 }

@@ -4,7 +4,7 @@ public class BookDto {
 
     private String author;
     private String nameOfBook;
-    private String picByte;
+    private String picPath;
     private int price;
     private String description;
 
@@ -27,12 +27,12 @@ public class BookDto {
         this.nameOfBook = nameOfBook;
     }
 
-    public String getPicByte() {
-        return picByte;
+    public String getPicPath() {
+        return picPath;
     }
 
-    public void setPicByte(String picByte) {
-        this.picByte = picByte;
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
     }
 
     public int getPrice() {

@@ -20,7 +20,7 @@ public class AdminController {
         return "CSV file loaded successfully";
     }
 
-    @PostMapping("/add-new-book")
+    @PostMapping("/addbook")
     public ResponseEntity addNewBook(@RequestBody BookDto bookDto) {
         return new ResponseEntity(iBookStoreService.addNewBook(bookDto), HttpStatus.CREATED);
     }
