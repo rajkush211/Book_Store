@@ -35,28 +35,24 @@ public class ControllerTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    String value = "CSV loaded successfully";
-
     @Test
     void whenLoadCsv_shouldReturn_DataLoadedSuccessfully() throws Exception {
+        String value = "CSV loaded successfully";
         when(iBookStoreService.loadBookData()).thenReturn(value);
         MvcResult mvcResult = this.mockMvc.perform(get("/home/admin/loadcsv")).andReturn();
         String result = mvcResult.getResponse().getContentAsString();
         Assert.assertEquals(value, result);
     }
 
-
-//    @Test
-//    void whenGiveBookDto_ShouldReturnBookAdded() throws Exception {
-//        BookDto bookDto = new BookDto("Rajkush", "Harry Potter", "http:/www.harrypotter.com/pic", 1750, "Harry Potter description");
-//
-//        String convertToJson = objectMapper.writeValueAsString(bookDto);
-//        when(iBookStoreService.addNewBook(any())).thenReturn(convertToJson);
-//        MvcResult mvcResult = this.mockMvc.perform(post("/home/admin/addbook").content(convertToJson).contentType(MediaType.APPLICATION_JSON)).andReturn();
-//        String result = mvcResult.getResponse().getContentAsString();
-//        System.out.println(result);
-//        BookDto values[] = objectMapper.readValue(result, BookDto[].class);
-//        System.out.println(values[0]);
-//        Assert.assertEquals(bookDto.getAuthor(), values[0].getAuthor());
-//    }
+    @Test
+    void whenGiveBookDto_ShouldReturnBookAdded() throws Exception {
+        BookDto bookDto = new BookDto("Rajkush", "Harry Potter", "http:/www.harrypotter.com/pic", 1750, "Harry Potter description");
+        String convertToJson = objectMapper.writeValueAsString(bookDto);
+        when(iBookStoreService.addNewBook(any())).thenReturn(convertToJson);
+        MvcResult mvcResult = this.mockMvc.perform(post("/home/admin/addbook").content(convertToJson).contentType(MediaType.APPLICATION_JSON)).andReturn();
+        String result = mvcResult.getResponse().getContentAsString();
+        System.out.println(result);
+        BookDto values = objectMapper.readValue(result, BookDto.class);
+        Assert.assertEquals("Rajkush", values.getAuthor());
+    }
 }
