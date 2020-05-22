@@ -11,6 +11,14 @@ public class BookDto {
     public BookDto() {
     }
 
+    public BookDto(String author, String nameOfBook, String picPath, int price, String description) {
+        this.author = author;
+        this.nameOfBook = nameOfBook;
+        this.picPath = picPath;
+        this.price = price;
+        this.description = description;
+    }
+
     public String getAuthor() {
         return author;
     }

@@ -22,7 +22,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     private ConverterService converterService;
 
     @Override
-    public void loadBookData() {
+    public String loadBookData() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/books_data.csv"));
             String line;
@@ -42,6 +42,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "CSV file Loaded Successfully";
     }
 
     @Override

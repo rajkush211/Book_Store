@@ -17,7 +17,7 @@ public class AdminController {
     @GetMapping("/loadcsv")
     public String loadCSVData() {
         iBookStoreService.loadBookData();
-        return "CSV file loaded successfully";
+        return "CSV loaded successfully";
     }
 
     @PostMapping("/addbook")
