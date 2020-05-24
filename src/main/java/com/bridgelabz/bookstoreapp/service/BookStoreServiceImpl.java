@@ -5,12 +5,13 @@ import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.IntStream;
 
 @Service
@@ -53,22 +54,22 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     }
 
     @Override
-    public List<Book> getAllBook() {
-        return bookStoreRepository.findAll();
+    public Page<Book> getAllBook(Pageable pageable) {
+        return bookStoreRepository.findAll(pageable);
     }
 
     @Override
-    public List<Book> findByAuthor(String author) {
-        return bookStoreRepository.findByAuthor(author);
+    public Page<Book> findByAuthor(String author, Pageable pageable) {
+        return bookStoreRepository.findByAuthor(author, pageable);
     }
 
     @Override
-    public List<Book> getAllBookByPriceAsc() {
-        return bookStoreRepository.findAllByOrderByPriceAsc();
+    public Page<Book> getAllBookByPriceAsc(Pageable pageable) {
+        return bookStoreRepository.findAllByOrderByPriceAsc(pageable);
     }
 
     @Override
-    public List<Book> getAllBookByPriceDesc() {
-        return bookStoreRepository.findAllByOrderByPriceDesc();
+    public Page<Book> getAllBookByPriceDesc(Pageable pageable) {
+        return bookStoreRepository.findAllByOrderByPriceDesc(pageable);
     }
 }

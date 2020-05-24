@@ -2,8 +2,8 @@ package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.BookDto;
 import com.bridgelabz.bookstoreapp.entity.Book;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IBookStoreService {
 
@@ -11,11 +11,11 @@ public interface IBookStoreService {
 
     String addNewBook(BookDto bookDto);
 
-    List<Book> getAllBook();
+    Page<Book> getAllBook(Pageable pageable);
 
-    List<Book> findByAuthor(String author);
+    Page<Book> findByAuthor(String author, Pageable pageable);
 
-    List<Book> getAllBookByPriceAsc();
+    Page<Book> getAllBookByPriceAsc(Pageable pageable);
 
-    List<Book> getAllBookByPriceDesc();
+    Page<Book> getAllBookByPriceDesc(Pageable pageable);
 }
