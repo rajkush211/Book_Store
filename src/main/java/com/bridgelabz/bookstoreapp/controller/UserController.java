@@ -31,4 +31,9 @@ public class UserController {
     public ResponseEntity<Book> booksInAscendingOrderByPrice() {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceAsc(), HttpStatus.OK);
     }
+
+    @GetMapping("/sort-desc/price")
+    public ResponseEntity<Book> booksInDescendingOrderByPrice() {
+        return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(), HttpStatus.OK);
+    }
 }

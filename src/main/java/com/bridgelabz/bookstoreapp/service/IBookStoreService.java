@@ -16,4 +16,6 @@ public interface IBookStoreService {
     List<Book> findByAuthor(String author);
 
     List<Book> getAllBookByPriceAsc();
+
+    List<Book> getAllBookByPriceDesc();
 }
