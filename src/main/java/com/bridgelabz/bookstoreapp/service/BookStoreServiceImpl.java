@@ -56,4 +56,9 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     public List<Book> getAllBook() {
         return bookStoreRepository.findAll();
     }
+
+    @Override
+    public List<Book> findByAuthor(String author) {
+        return bookStoreRepository.findByAuthor(author);
+    }
 }

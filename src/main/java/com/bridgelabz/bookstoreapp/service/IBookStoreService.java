@@ -12,4 +12,6 @@ public interface IBookStoreService {
     String addNewBook(BookDto bookDto);
 
     List<Book> getAllBook();
+
+    List<Book> findByAuthor(String author);
 }
