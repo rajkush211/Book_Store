@@ -49,7 +49,10 @@ public class ControllerTest {
         BookDto bookDto = new BookDto("Rajkush", "Harry Potter", "http:/www.harrypotter.com/pic", 1750, "Harry Potter description");
         String convertToJson = objectMapper.writeValueAsString(bookDto);
         when(iBookStoreService.addNewBook(any())).thenReturn(convertToJson);
-        MvcResult mvcResult = this.mockMvc.perform(post("/home/admin/addbook").content(convertToJson).contentType(MediaType.APPLICATION_JSON)).andReturn();
+        MvcResult mvcResult = this.mockMvc.perform(post("/home/admin/addbook")
+                                          .content(convertToJson)
+                                          .contentType(MediaType.APPLICATION_JSON))
+                                          .andReturn();
         String result = mvcResult.getResponse().getContentAsString();
         System.out.println(result);
         BookDto values = objectMapper.readValue(result, BookDto.class);

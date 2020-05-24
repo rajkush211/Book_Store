@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.IntStream;
 
 @Service
@@ -30,7 +31,6 @@ public class BookStoreServiceImpl implements IBookStoreService  {
             while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split(",");
                 Book book = new Book();
-//                book.setId(data[0]);
                 book.setAuthor(data[1]);
                 book.setNameOfBook(data[2]);
                 book.setPicPath(data[3]);
@@ -50,5 +50,10 @@ public class BookStoreServiceImpl implements IBookStoreService  {
         Book book = converterService.convertToBookEntity(bookDto);
         bookStoreRepository.save(book);
         return "Book successfully added";
+    }
+
+    @Override
+    public List<Book> getAllBook() {
+        return bookStoreRepository.findAll();
     }
 }
