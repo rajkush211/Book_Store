@@ -8,4 +8,6 @@ import java.util.List;
 public interface BookStoreRepository extends JpaRepository<Book, String> {
 
     List<Book> findByAuthor(String author);
+
+    List<Book> findAllByOrderByPriceAsc();
 }

@@ -23,7 +23,12 @@ public class UserController {
     }
 
     @GetMapping("/{author}")
-    public ResponseEntity<Book> findByAuthor(@PathVariable String author) {
+    public ResponseEntity<Book> booksByAuthor(@PathVariable String author) {
         return new ResponseEntity(iBookStoreService.findByAuthor(author), HttpStatus.OK);
+    }
+
+    @GetMapping("/sort-asc/price")
+    public ResponseEntity<Book> booksInAscendingOrderByPrice() {
+        return new ResponseEntity(iBookStoreService.getAllBookByPriceAsc(), HttpStatus.OK);
     }
 }
