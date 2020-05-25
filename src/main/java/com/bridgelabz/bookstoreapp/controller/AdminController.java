@@ -1,5 +1,6 @@
 package com.bridgelabz.bookstoreapp.controller;
 
+import com.bridgelabz.bookstoreapp.dto.AdminDto;
 import com.bridgelabz.bookstoreapp.dto.BookDto;
 import com.bridgelabz.bookstoreapp.service.IBookStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
