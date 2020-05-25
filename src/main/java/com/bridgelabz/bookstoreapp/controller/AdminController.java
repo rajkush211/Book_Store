@@ -29,7 +29,7 @@ public class AdminController {
 
     @PostMapping("/addbook")
     public ResponseEntity addNewBook(@RequestBody BookDto bookDto) {
-        return new ResponseEntity(iBookStoreService.addNewBook(bookDto), HttpStatus.CREATED);
+        return new ResponseEntity(iAdminService.addNewBook(bookDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/uploadcsv")
@@ -44,6 +44,6 @@ public class AdminController {
 
     @PostMapping("/login")
     public ResponseEntity<AdminDto> loginAdmin(@RequestBody LoginDto loginDto) {
-        return new ResponseEntity(iAdminService.login(loginDto), HttpStatus.CREATED);
+        return new ResponseEntity(iAdminService.login(loginDto), HttpStatus.OK);
     }
 }

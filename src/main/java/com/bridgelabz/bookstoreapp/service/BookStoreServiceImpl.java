@@ -46,13 +46,6 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     }
 
     @Override
-    public String addNewBook(BookDto bookDto) {
-        Book book = converterService.convertToBookEntity(bookDto);
-        bookStoreRepository.save(book);
-        return "Book successfully added";
-    }
-
-    @Override
     public Page<Book> getAllBook(Pageable pageable) {
         return bookStoreRepository.findAll(pageable);
     }

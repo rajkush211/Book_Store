@@ -10,8 +10,6 @@ public interface IBookStoreService {
 
     String loadBookData();
 
-    String addNewBook(BookDto bookDto);
-
     Page<Book> getAllBook(Pageable pageable);
 
     Page<Book> findByAuthor(String author, Pageable pageable);
