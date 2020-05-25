@@ -64,28 +64,4 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     public Page<Book> getAllBookByPriceDesc(Pageable pageable) {
         return bookStoreRepository.findAllByOrderByPriceDesc(pageable);
     }
-
-    @Override
-    public String fetchBookData(MultipartFile multipartFile) {
-        try {
-            InputStream inputStream = multipartFile.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            bufferedReader.readLine();
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] data = line.split(",");
-                Book book = new Book();
-                book.setAuthor(data[1]);
-                book.setNameOfBook(data[2]);
-                book.setPicPath(data[3]);
-                book.setPrice(Integer.parseInt(data[4]));
-                IntStream.range(6, data.length - 1).forEach(column -> data[5] += "," + data[column]);
-                book.setDescription(data[5]);
-                bookStoreRepository.save(book);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "CSV file Loaded Successfully";
-    }
 }

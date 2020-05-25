@@ -17,6 +17,4 @@ public interface IBookStoreService {
     Page<Book> getAllBookByPriceAsc(Pageable pageable);
 
     Page<Book> getAllBookByPriceDesc(Pageable pageable);
-
-    String fetchBookData(MultipartFile multipartFile);
 }

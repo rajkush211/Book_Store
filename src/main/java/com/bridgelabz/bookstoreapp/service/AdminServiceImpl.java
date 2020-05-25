@@ -11,6 +11,13 @@ import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.IntStream;
 
 @Service
 public class AdminServiceImpl implements IAdminService {
@@ -66,5 +73,32 @@ public class AdminServiceImpl implements IAdminService {
             return "Book successfully added";
         }
         return "You don't have permission to Add Book!!";
+    }
+
+    @Override
+    public String fetchBookData(MultipartFile multipartFile) {
+        if(isLoggedIn()) {
+            try {
+                InputStream inputStream = multipartFile.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                bufferedReader.readLine();
+                while ((line = bufferedReader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    Book book = new Book();
+                    book.setAuthor(data[1]);
+                    book.setNameOfBook(data[2]);
+                    book.setPicPath(data[3]);
+                    book.setPrice(Integer.parseInt(data[4]));
+                    IntStream.range(6, data.length - 1).forEach(column -> data[5] += "," + data[column]);
+                    book.setDescription(data[5]);
+                    bookStoreRepository.save(book);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "CSV file Loaded Successfully";
+        }
+        return "You Don't have permission to upload Book data!!";
     }
 }

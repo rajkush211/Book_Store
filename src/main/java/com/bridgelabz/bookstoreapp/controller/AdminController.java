@@ -34,7 +34,7 @@ public class AdminController {
 
     @PostMapping("/uploadcsv")
     public String uploadCsvData(@RequestParam("multipartFile") MultipartFile multipartFile) {
-        return iBookStoreService.fetchBookData(multipartFile);
+        return iAdminService.fetchBookData(multipartFile);
     }
 
     @PostMapping("/register")
