@@ -1,6 +1,7 @@
 package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.AdminDto;
+import com.bridgelabz.bookstoreapp.dto.LoginDto;
 import com.bridgelabz.bookstoreapp.entity.Admin;
 import com.bridgelabz.bookstoreapp.repository.AdminRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
@@ -27,5 +28,14 @@ public class AdminServiceImpl implements IAdminService {
         admin.setPassword(encode);
         adminRepository.save(admin);
         return "Successfully registered";
+    }
+
+    @Override
+    public String login(LoginDto loginDto) {
+        Admin user = adminRepository.findByEmailId(loginDto.getEmailId());
+        if (passwordEncoder.matches(loginDto.getPassWord(), user.getPassword())) {
+            return "You are logged in";
+        }
+        return "Invalid";
     }
 }
