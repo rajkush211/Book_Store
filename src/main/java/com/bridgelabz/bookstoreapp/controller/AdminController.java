@@ -2,6 +2,7 @@ package com.bridgelabz.bookstoreapp.controller;
 
 import com.bridgelabz.bookstoreapp.dto.AdminDto;
 import com.bridgelabz.bookstoreapp.dto.BookDto;
+import com.bridgelabz.bookstoreapp.service.IAdminService;
 import com.bridgelabz.bookstoreapp.service.IBookStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,9 @@ public class AdminController {
 
     @Autowired
     private IBookStoreService iBookStoreService;
+
+    @Autowired
+    private IAdminService iAdminService;
 
     @GetMapping("/loadcsv")
     public String loadCSVData() {
@@ -30,5 +34,10 @@ public class AdminController {
     @PostMapping("/uploadcsv")
     public String uploadCsvData(@RequestParam("multipartFile") MultipartFile multipartFile) {
         return iBookStoreService.fetchBookData(multipartFile);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AdminDto> registerAdmin(@RequestBody AdminDto adminDto) {
+        return new ResponseEntity(iAdminService.register(adminDto), HttpStatus.CREATED);
     }
 }
