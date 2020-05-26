@@ -1,8 +1,6 @@
 package com.bridgelabz.bookstoreapp.utility;
 
-import com.bridgelabz.bookstoreapp.dto.AdminDto;
 import com.bridgelabz.bookstoreapp.dto.BookDto;
-import com.bridgelabz.bookstoreapp.entity.Admin;
 import com.bridgelabz.bookstoreapp.entity.Book;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +18,5 @@ public class ConverterService {
 
     public Book convertToBookEntity(BookDto bookDto) {
         return modelMapper.map(bookDto, Book.class);
-    }
-
-    public AdminDto convertToAdminDto(Admin admin) {
-        return modelMapper.map(admin, AdminDto.class);
-    }
-
-    public Admin convertToAdminEntity(AdminDto adminDto) {
-        return modelMapper.map(adminDto, Admin.class);
     }
 }
