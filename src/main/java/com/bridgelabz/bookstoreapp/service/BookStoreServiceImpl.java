@@ -2,7 +2,9 @@ package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.BookDto;
 import com.bridgelabz.bookstoreapp.entity.Book;
+import com.bridgelabz.bookstoreapp.entity.User;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
+import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
@@ -21,6 +24,9 @@ public class BookStoreServiceImpl implements IBookStoreService  {
 
     @Autowired
     private ConverterService converterService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public String loadBookData() {
@@ -94,5 +100,13 @@ public class BookStoreServiceImpl implements IBookStoreService  {
             e.printStackTrace();
         }
         return "CSV file Loaded Successfully";
+    }
+
+    @Override
+    public String verifyUserAccount(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        user.get().setVerified(true);
+        userRepository.save(user.get());
+        return "Congratulations!! Your account is verified.";
     }
 }

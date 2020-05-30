@@ -21,4 +21,6 @@ public interface IBookStoreService {
     String fetchBookData(MultipartFile multipartFile);
 
     String addNewBook(BookDto bookDto);
+
+    String verifyUserAccount(Long userId);
 }

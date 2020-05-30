@@ -13,6 +13,9 @@ import com.bridgelabz.bookstoreapp.service.UserDetailsImpl;
 import com.bridgelabz.bookstoreapp.utility.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,19 +34,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     @Autowired
-    JwtUtils jwtUtils;
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -110,7 +116,17 @@ public class AuthenticationController {
         }
         user.setRoles(roles);
         userRepository.save(user);
-
+        sendEmailToVerify(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    private void sendEmailToVerify(User user) throws MailException {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(user.getEmail());
+        simpleMailMessage.setFrom("rajkush211.rk@gmail.com");
+        simpleMailMessage.setSubject("Welcome to Book Store");
+        simpleMailMessage.setText("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
+
+        javaMailSender.send(simpleMailMessage);
     }
 }
