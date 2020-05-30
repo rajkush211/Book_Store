@@ -1,5 +1,6 @@
 package com.bridgelabz.bookstoreapp.controller;
 
+import com.bridgelabz.bookstoreapp.dto.RabbitMqDto;
 import com.bridgelabz.bookstoreapp.entity.Role;
 import com.bridgelabz.bookstoreapp.entity.User;
 import com.bridgelabz.bookstoreapp.model.ERole;
@@ -11,11 +12,11 @@ import com.bridgelabz.bookstoreapp.repository.RoleRepository;
 import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.service.UserDetailsImpl;
 import com.bridgelabz.bookstoreapp.utility.JwtUtils;
+import com.bridgelabz.bookstoreapp.utility.RabbitMq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,6 +54,12 @@ public class AuthenticationController {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private RabbitMqDto rabbitMqDto;
+
+    @Autowired
+    private RabbitMq rabbitMq;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -62,7 +69,6 @@ public class AuthenticationController {
         Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
 
         if (user.get().isVerified()) {
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
 
@@ -130,12 +136,10 @@ public class AuthenticationController {
     }
 
     private void sendEmailToVerify(User user) throws MailException {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(user.getEmail());
-        simpleMailMessage.setFrom("rajkush211.rk@gmail.com");
-        simpleMailMessage.setSubject("Welcome to Book Store");
-        simpleMailMessage.setText("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
-
-        javaMailSender.send(simpleMailMessage);
+        rabbitMqDto.setTo(user.getEmail());
+        rabbitMqDto.setFrom("rajkush211.rk@gmail.com");
+        rabbitMqDto.setSubject("Welcome to Book Store, Thank you for registering with us!!");
+        rabbitMqDto.setBody("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
+        rabbitMq.sendMessageToQueue(rabbitMqDto);
     }
 }
