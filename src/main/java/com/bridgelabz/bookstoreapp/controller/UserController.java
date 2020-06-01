@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private IBookStoreService iBookStoreService;
 
-    @GetMapping("/all-book")
+    @GetMapping("/allbook")
     public ResponseEntity<Page<Book>> getAllBook(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBook(pageable), HttpStatus.OK);
     }

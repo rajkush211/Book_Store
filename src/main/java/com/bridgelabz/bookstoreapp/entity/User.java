@@ -1,7 +1,10 @@
 package com.bridgelabz.bookstoreapp.entity;
 
+import org.springframework.data.redis.core.RedisHash;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -1,9 +1,12 @@
 package com.bridgelabz.bookstoreapp.entity;
 
+import org.springframework.data.redis.core.RedisHash;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

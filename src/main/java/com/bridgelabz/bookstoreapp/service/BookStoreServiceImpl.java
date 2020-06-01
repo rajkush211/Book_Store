@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.cache.annotation.Cacheable;
 import java.io.*;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -57,6 +58,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     }
 
     @Override
+    @Cacheable(value= "bookByAuthor", key= "#author")
     public Page<Book> findByAuthor(String author, Pageable pageable) {
         return bookStoreRepository.findByAuthor(author, pageable);
     }
