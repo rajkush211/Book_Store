@@ -15,7 +15,7 @@ public class CartController {
     @Autowired
     private ICartService iCartService;
 
-    @PutMapping("/add")
+    @PutMapping("/add-update")
     public ResponseEntity<String> addToCart(@RequestBody CartDto cartDto) {
         return new ResponseEntity<String>(iCartService.addToCart(cartDto), HttpStatus.OK);
     }
