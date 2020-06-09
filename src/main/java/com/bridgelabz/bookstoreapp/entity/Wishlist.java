@@ -17,14 +17,6 @@ public class Wishlist {
     public Wishlist() {
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getUserId() {
         return userId;
     }
