@@ -16,4 +16,5 @@ public interface BookStoreRepository extends JpaRepository<Book, String>, Paging
     Page<Book> findAllByOrderByPriceAsc(Pageable pageable);
 
     Page<Book> findAllByOrderByPriceDesc(Pageable pageable);
+    Book findById(int bookId);
 }
