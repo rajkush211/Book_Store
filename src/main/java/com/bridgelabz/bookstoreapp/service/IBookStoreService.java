@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface IBookStoreService {
 
     String loadBookData();
@@ -23,4 +25,6 @@ public interface IBookStoreService {
     String addNewBook(BookDto bookDto);
 
     String verifyUserAccount(Long userId);
+
+    List<Book> getAll();
 }

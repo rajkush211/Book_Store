@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.cache.annotation.Cacheable;
 import java.io.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -58,7 +59,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     }
 
     @Override
-    @Cacheable(value= "bookByAuthor", key= "#author")
+    @Cacheable(value= "raj", key= "#author")
     public Page<Book> findByAuthor(String author, Pageable pageable) {
         return bookStoreRepository.findByAuthor(author, pageable);
     }
@@ -110,5 +111,10 @@ public class BookStoreServiceImpl implements IBookStoreService  {
         user.get().setVerified(true);
         userRepository.save(user.get());
         return "Congratulations!! Your account is verified.";
+    }
+
+    @Override
+    public List<Book> getAll() {
+        return bookStoreRepository.findAll();
     }
 }

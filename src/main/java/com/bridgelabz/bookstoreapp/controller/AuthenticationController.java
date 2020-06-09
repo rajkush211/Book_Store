@@ -52,9 +52,6 @@ public class AuthenticationController {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private JavaMailSender javaMailSender;
-
-    @Autowired
     private RabbitMqDto rabbitMqDto;
 
     @Autowired
@@ -110,9 +107,11 @@ public class AuthenticationController {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
+//            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+//                    .orElseThrow(() ->
+            throw new RuntimeException("Error: Role is not found.");
+//            );
+//            roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
@@ -137,7 +136,7 @@ public class AuthenticationController {
 
     private void sendEmailToVerify(User user) throws MailException {
         rabbitMqDto.setTo(user.getEmail());
-        rabbitMqDto.setFrom("rajkush211.rk@gmail.com");
+        rabbitMqDto.setFrom("${EMAIL}");
         rabbitMqDto.setSubject("Welcome to Book Store, Thank you for registering with us!!");
         rabbitMqDto.setBody("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
         rabbitMq.sendMessageToQueue(rabbitMqDto);
