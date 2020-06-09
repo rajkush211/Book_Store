@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface WishlistRepository extends JpaRepository<Wishlist, Integer> {
 
-    boolean existsCartByUserId(int userId);
-    boolean existsCartByBookId(int bookId);
+    boolean existsWishlistByUserId(int userId);
+    boolean existsWishlistByBookId(int bookId);
 
     @Modifying
     @Transactional

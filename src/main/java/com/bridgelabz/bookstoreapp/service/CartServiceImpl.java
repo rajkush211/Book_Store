@@ -24,13 +24,13 @@ public class CartServiceImpl implements ICartService {
         if (cartRepository.existsCartByUserId(cart.getUserId()) && cartRepository.existsCartByBookId(cart.getBookId()))
             cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
         cartRepository.save(cart);
-        return "Added to cart";
+        return "Added to cart successfully";
     }
 
     @Override
     public String removeFromCart(CartDto cartDto) {
         Cart cart = converterService.convertToCartEntity(cartDto);
         cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-        return "Book Removed Successfully";
+        return "Book Removed from cart Successfully";
     }
 }
