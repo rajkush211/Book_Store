@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface WishlistRepository extends JpaRepository<Wishlist, Integer> {
 
     boolean existsWishlistByUserId(int userId);
     boolean existsWishlistByBookId(int bookId);
+    List<Wishlist> findAllByUserId(int userId);
+
 
     @Modifying
     @Transactional

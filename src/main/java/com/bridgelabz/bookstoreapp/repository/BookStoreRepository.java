@@ -8,6 +8,8 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookStoreRepository extends JpaRepository<Book, String>, PagingAndSortingRepository<Book, String> {
 
@@ -16,4 +18,6 @@ public interface BookStoreRepository extends JpaRepository<Book, String>, Paging
     Page<Book> findAllByOrderByPriceAsc(Pageable pageable);
 
     Page<Book> findAllByOrderByPriceDesc(Pageable pageable);
+
+    Book findById(int bookId);
 }
