@@ -22,7 +22,7 @@ public class CartServiceImpl implements ICartService {
     public String addToCart(CartDto cartDto) {
         Cart cart = converterService.convertToCartEntity(cartDto);
         if (cartRepository.existsCartByUserId(cart.getUserId()) && cartRepository.existsCartByBookId(cart.getBookId()))
-            cartRepository.deleteCartsByBookIdAndUserId(cart.getBookId(), cart.getUserId());
+            cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
         cartRepository.save(cart);
         return "Added to cart";
     }
@@ -30,7 +30,7 @@ public class CartServiceImpl implements ICartService {
     @Override
     public String removeFromCart(CartDto cartDto) {
         Cart cart = converterService.convertToCartEntity(cartDto);
-        cartRepository.deleteCartsByBookIdAndUserId(cart.getBookId(), cart.getUserId());
+        cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
         return "Book Removed Successfully";
     }
 }
