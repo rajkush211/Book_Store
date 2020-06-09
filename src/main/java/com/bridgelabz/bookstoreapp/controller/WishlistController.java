@@ -27,8 +27,8 @@ public class WishlistController {
         return new ResponseEntity<String>(iWishlistService.removeFromWishlist(wishlistDto), HttpStatus.OK);
     }
 
-    @GetMapping("/getall")
-    public ResponseEntity<List<Book>> getAllBooksList(@RequestBody int userId) {
+    @GetMapping("/getall/{userId}")
+    public ResponseEntity<List<Book>> getAllBooksList(@PathVariable int userId) {
         return new ResponseEntity<List<Book>>(iWishlistService.getAllBooksList(userId), HttpStatus.OK);
     }
 }
