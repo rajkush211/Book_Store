@@ -47,6 +47,8 @@ public class CartServiceImpl implements ICartService {
         List<Book> cartBooks = new ArrayList<>();
         List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
         for(Cart cart : allByUserId) {
+            if(cart.getBookQuantity() == 0)
+                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
             cartBooks.add(bookStoreRepository.findById(cart.getBookId()));
         }
         return cartBooks;
