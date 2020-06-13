@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("home/user/cart")
+@CrossOrigin(value = "*")
 public class CartController {
 
     @Autowired

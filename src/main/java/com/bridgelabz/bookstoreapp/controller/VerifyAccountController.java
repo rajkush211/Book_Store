@@ -28,4 +28,15 @@ public class VerifyAccountController {
     public ResponseEntity<Book> getAllBook() {
         return new ResponseEntity(iBookStoreService.getAll(), HttpStatus.OK);
     }
+
+
+    @GetMapping("/sort-asc/price")
+    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return new ResponseEntity(iBookStoreService.getAllBookByPriceAsc(pageable), HttpStatus.OK);
+    }
+
+    @GetMapping("/sort-desc/price")
+    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(pageable), HttpStatus.OK);
+    }
 }
