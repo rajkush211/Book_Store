@@ -1,24 +1,23 @@
-package com.bridgelabz.bookstoreapp.entity;
+package com.bridgelabz.bookstoreapp.dto;
 
-import org.springframework.data.redis.core.RedisHash;
-
-import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
-public class Book implements Serializable {
+public class CartQtyDto implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String author;
     private String nameOfBook;
     private String picPath;
     private int price;
-    @Column(length = 2000)
-    private String description;
+    private int bookQuantity;
 
-    public Book() {
+    public CartQtyDto(int id, String author, String nameOfBook, String picPath, int price, int bookQuantity) {
+        this.id = id;
+        this.author = author;
+        this.nameOfBook = nameOfBook;
+        this.picPath = picPath;
+        this.price = price;
+        this.bookQuantity = bookQuantity;
     }
 
     public int getId() {
@@ -61,25 +60,11 @@ public class Book implements Serializable {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
+    public int getBookQuantity() {
+        return bookQuantity;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", author='" + author + '\'' +
-                ", nameOfBook='" + nameOfBook + '\'' +
-                ", picPath='" + picPath + '\'' +
-                ", price=" + price +
-                ", description='" + description + '\'' +
-                '}';
+    public void setBookQuantity(int bookQuantity) {
+        this.bookQuantity = bookQuantity;
     }
 }
-
-

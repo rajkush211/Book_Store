@@ -59,7 +59,6 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     }
 
     @Override
-    @Cacheable(value= "raj", key= "#author")
     public Page<Book> findByAuthor(String author, Pageable pageable) {
         return bookStoreRepository.findByAuthor(author, pageable);
     }

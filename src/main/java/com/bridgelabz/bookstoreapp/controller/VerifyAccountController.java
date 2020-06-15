@@ -4,12 +4,15 @@ import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.service.IBookStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/verifyaccount")
@@ -24,11 +27,12 @@ public class VerifyAccountController {
         return new ResponseEntity(iBookStoreService.verifyUserAccount(userId), HttpStatus.OK);
     }
 
+//    @Cacheable(value= "Book")
     @GetMapping("/all")
-    public ResponseEntity<Book> getAllBook() {
-        return new ResponseEntity(iBookStoreService.getAll(), HttpStatus.OK);
+    public List<Book> getAllBook() {
+        System.out.println("Getting all Books");
+        return iBookStoreService.getAll();
     }
-
 
     @GetMapping("/sort-asc/price")
     public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
@@ -36,7 +40,7 @@ public class VerifyAccountController {
     }
 
     @GetMapping("/sort-desc/price")
-    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 20) Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(pageable), HttpStatus.OK);
     }
 }

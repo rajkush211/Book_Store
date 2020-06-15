@@ -1,6 +1,7 @@
 package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.CartDto;
+import com.bridgelabz.bookstoreapp.dto.CartQtyDto;
 import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.entity.Cart;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -46,11 +49,44 @@ public class CartServiceImpl implements ICartService {
     public List<Book> getAllCartBooks(int userId) {
         List<Book> cartBooks = new ArrayList<>();
         List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
-        for(Cart cart : allByUserId) {
-            if(cart.getBookQuantity() == 0)
+        for (Cart cart : allByUserId) {
+            if (cart.getBookQuantity() == 0)
                 cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
             cartBooks.add(bookStoreRepository.findById(cart.getBookId()));
         }
         return cartBooks;
     }
-}
+
+    @Override
+    public List<CartQtyDto> getBooks(int userId) {
+        List<CartQtyDto> cartQtyDto = new ArrayList<>();
+        List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
+        for (Cart cart : allByUserId) {
+            if (cart.getBookQuantity() == 0 )
+                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
+
+            cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
+                    bookStoreRepository.findById(cart.getBookId()).getAuthor(),
+                    bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
+                    bookStoreRepository.findById(cart.getBookId()).getPicPath(),
+                    bookStoreRepository.findById(cart.getBookId()).getPrice(),
+                    cartRepository.findByBookIdAndUserId(cart.getBookId(), cart.getUserId()).getBookQuantity()));
+        }
+        return cartQtyDto;
+    }
+
+
+//    @Override
+//    public Map<Book, Integer> getAllCartBooks(int userId) {
+//        Map<Book, Integer> cartBooks = new HashMap<>();
+//        List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
+//        for(Cart cart : allByUserId) {
+//            if(cart.getBookQuantity() == 0)
+//                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
+//            cartBooks.put(bookStoreRepository.findById(cart.getBookId()), cart.getBookQuantity());
+//        }
+//        return cartBooks;
+//    }
+    }
+
+

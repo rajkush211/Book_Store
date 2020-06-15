@@ -24,7 +24,7 @@ public class AdminController {
     }
 
     @PostMapping("/addbook")
-    public ResponseEntity addNewBook(@RequestBody BookDto bookDto) {
+    public ResponseEntity addNewBook(@RequestBody BookDto bookDto, @RequestHeader String token) {
         return new ResponseEntity(iBookStoreService.addNewBook(bookDto), HttpStatus.CREATED);
     }
 
