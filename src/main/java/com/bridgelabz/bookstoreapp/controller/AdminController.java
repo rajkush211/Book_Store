@@ -24,12 +24,12 @@ public class AdminController {
     }
 
     @PostMapping("/addbook")
-    public ResponseEntity addNewBook(@RequestBody BookDto bookDto, @RequestHeader String token) {
+    public ResponseEntity addNewBook(@RequestBody BookDto bookDto, @RequestHeader String Authorization) {
         return new ResponseEntity(iBookStoreService.addNewBook(bookDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/uploadcsv")
-    public ResponseEntity<String> uploadCsvData(@RequestParam("multipartFile") MultipartFile multipartFile) {
+    public ResponseEntity<String> uploadCsvData(@RequestParam("multipartFile") MultipartFile multipartFile, @RequestHeader String Authorization) {
         return new ResponseEntity(iBookStoreService.fetchBookData(multipartFile), HttpStatus.ACCEPTED);
     }
 }

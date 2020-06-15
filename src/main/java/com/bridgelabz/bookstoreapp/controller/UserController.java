@@ -26,17 +26,17 @@ public class UserController {
     }
 
     @GetMapping("/{author}")
-    public ResponseEntity<Page<Book>> booksByAuthor(@PathVariable String author, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksByAuthor(@PathVariable String author, @PageableDefault(page = 0, size = 10) Pageable pageable, @RequestHeader String Authorization) {
         return new ResponseEntity(iBookStoreService.findByAuthor(author, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-asc/price")
-    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable, @RequestHeader String Authorization) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceAsc(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-desc/price")
-    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable, @RequestHeader String Authorization) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(pageable), HttpStatus.OK);
     }
 }

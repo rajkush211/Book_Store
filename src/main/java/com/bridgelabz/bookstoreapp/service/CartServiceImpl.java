@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -60,17 +58,20 @@ public class CartServiceImpl implements ICartService {
     @Override
     public List<CartQtyDto> getBooks(int userId) {
         List<CartQtyDto> cartQtyDto = new ArrayList<>();
-        List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
-        for (Cart cart : allByUserId) {
-            if (cart.getBookQuantity() == 0 )
-                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-
-            cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
-                    bookStoreRepository.findById(cart.getBookId()).getAuthor(),
-                    bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
-                    bookStoreRepository.findById(cart.getBookId()).getPicPath(),
-                    bookStoreRepository.findById(cart.getBookId()).getPrice(),
-                    cartRepository.findByBookIdAndUserId(cart.getBookId(), cart.getUserId()).getBookQuantity()));
+        try {
+            List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
+            for (Cart cart : allByUserId) {
+                if (cart.getBookQuantity() == 0)
+                    cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
+                cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
+                        bookStoreRepository.findById(cart.getBookId()).getAuthor(),
+                        bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
+                        bookStoreRepository.findById(cart.getBookId()).getPicPath(),
+                        bookStoreRepository.findById(cart.getBookId()).getPrice(),
+                        cartRepository.findByBookIdAndUserId(cart.getBookId(), cart.getUserId()).getBookQuantity()));
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         return cartQtyDto;
     }
@@ -87,6 +88,6 @@ public class CartServiceImpl implements ICartService {
 //        }
 //        return cartBooks;
 //    }
-    }
+}
 
 
