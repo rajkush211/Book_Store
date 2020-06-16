@@ -23,19 +23,20 @@ public class CartController {
     @Autowired
     private ICartService iCartService;
 
-//    @CacheEvict(value = "Book", key = "#cartDto.userId")
+    @CacheEvict(value = "Book", key = "#cartDto.userId")
     @PutMapping("/add-update")
     public String addToCart(@RequestBody CartDto cartDto) {
         System.out.println("Updating records");
         return iCartService.addToCart(cartDto);
     }
 
+    @CacheEvict(value = "Book", key = "#cartDto.userId")
     @PutMapping("/remove")
     public ResponseEntity<String> removeFromCart(@RequestBody CartDto cartDto) {
         return new ResponseEntity<String>(iCartService.removeFromCart(cartDto), HttpStatus.OK);
     }
 
-//    @Cacheable(value = "Book", key = "#userId")
+    @Cacheable(value = "Book", key = "#userId")
     @GetMapping("/getall/{userId}")
     public List<CartQtyDto> getall(@PathVariable int userId) {
         System.out.println("getting books from cart");
