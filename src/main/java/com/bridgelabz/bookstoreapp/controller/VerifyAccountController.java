@@ -49,4 +49,9 @@ public class VerifyAccountController {
     public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 20) Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(pageable), HttpStatus.OK);
     }
+
+    @GetMapping("/searchbooks/{searchText}")
+    public ResponseEntity<Page<Book>> searchBooks(@PathVariable String searchText, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return new ResponseEntity(iBookStoreService.findByAuthor(searchText, pageable), HttpStatus.OK);
+    }
 }
