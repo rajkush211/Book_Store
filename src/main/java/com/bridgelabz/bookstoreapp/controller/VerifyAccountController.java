@@ -5,6 +5,8 @@ import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.service.IBookStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,20 +19,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/verifyaccount")
 @CrossOrigin(value = "*")
+@PropertySource("classpath:message.properties")
 public class VerifyAccountController {
 
     @Autowired
     private IBookStoreService iBookStoreService;
+
+    @Autowired
+    Environment environment;
 
     @GetMapping("/{userId}")
     public ResponseEntity<String> verifyAccount(@PathVariable long userId) {
         return new ResponseEntity(iBookStoreService.verifyUserAccount(userId), HttpStatus.OK);
     }
 
-//    @Cacheable(value= "Book")
+    @Cacheable(value = "Book")
     @GetMapping("/all")
     public List<Book> getAllBook() {
-        System.out.println("Getting all Books");
+        System.out.println(environment.getProperty("ALL_BOOKS"));
         return iBookStoreService.getAll();
     }
 

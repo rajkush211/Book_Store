@@ -1,6 +1,6 @@
 package com.bridgelabz.bookstoreapp.service;
 
-import com.bridgelabz.bookstoreapp.dto.RabbitMqDto;
+import com.bridgelabz.bookstoreapp.dto.EmailDto;
 import com.bridgelabz.bookstoreapp.entity.Role;
 import com.bridgelabz.bookstoreapp.entity.User;
 import com.bridgelabz.bookstoreapp.model.ERole;
@@ -22,9 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +48,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
     private PasswordEncoder encoder;
 
     @Autowired
-    private RabbitMqDto rabbitMqDto;
+    private EmailDto emailDto;
 
     @Autowired
     private RabbitMq rabbitMq;
@@ -133,10 +131,10 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
     }
 
     private void sendEmailToVerify(User user) throws MailException {
-        rabbitMqDto.setTo(user.getEmail());
-        rabbitMqDto.setFrom("${EMAIL}");
-        rabbitMqDto.setSubject("Welcome to Book Store, Thank you for registering with us!!");
-        rabbitMqDto.setBody("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
-        rabbitMq.sendMessageToQueue(rabbitMqDto);
+        emailDto.setTo(user.getEmail());
+        emailDto.setFrom("${EMAIL}");
+        emailDto.setSubject("Welcome to Book Store, Thank you for registering with us!!");
+        emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
+        rabbitMq.sendMessageToQueue(emailDto);
     }
 }

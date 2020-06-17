@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 
 @Component
-public class RabbitMqDto implements Serializable {
+public class EmailDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

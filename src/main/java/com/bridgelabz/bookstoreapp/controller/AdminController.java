@@ -18,7 +18,7 @@ public class AdminController {
     private IBookStoreService iBookStoreService;
 
     @GetMapping("/loadcsv")
-    public String loadCSVData() {
+    public String loadCSVData(@RequestHeader String Authorization) {
         iBookStoreService.loadBookData();
         return "CSV loaded successfully";
     }

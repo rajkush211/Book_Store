@@ -39,10 +39,10 @@ public class BookStoreServiceImpl implements IBookStoreService  {
             while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split(",");
                 Book book = new Book();
-                book.setAuthor(data[1]);
-                book.setNameOfBook(data[2]);
-                book.setPicPath(data[3]);
-                book.setPrice(Integer.parseInt(data[4]));
+                book.setAuthor(data[1].replaceAll("'", ""));
+                book.setNameOfBook(data[2].replaceAll("'", ""));
+                book.setPicPath(data[3].replaceAll("'", ""));
+                book.setPrice(Integer.parseInt(data[4].replaceAll("'", "")));
                 IntStream.range(6, data.length - 1).forEach(column -> data[5] += "," + data[column]);
                 book.setDescription(data[5]);
                 bookStoreRepository.save(book);

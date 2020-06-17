@@ -1,6 +1,6 @@
 package com.bridgelabz.bookstoreapp.utility;
 
-import com.bridgelabz.bookstoreapp.dto.RabbitMqDto;
+import com.bridgelabz.bookstoreapp.dto.EmailDto;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ public class RabbitMq {
     private JavaMailSender javaMailSender;
 
     // PRODUCER
-    public void sendMessageToQueue(RabbitMqDto rabbitMqDto) {
+    public void sendMessageToQueue(EmailDto emailDto) {
         final String exchange = "rabbitExchange";
         final String routingKey = "rabbitKey";
-        rabbitTemplate.convertAndSend(exchange, routingKey, rabbitMqDto);
+        rabbitTemplate.convertAndSend(exchange, routingKey, emailDto);
     }
 
-    public void send(RabbitMqDto email) {
+    public void send(EmailDto email) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email.getTo());
         message.setFrom(email.getFrom());
@@ -36,7 +36,7 @@ public class RabbitMq {
 
     // LISTENER
     @RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
-    public void receiveMessage(RabbitMqDto email) {
+    public void receiveMessage(EmailDto email) {
         send(email);
     }
 }
