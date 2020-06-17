@@ -51,7 +51,7 @@ public class VerifyAccountController {
     }
 
     @GetMapping("/searchbooks/{searchText}")
-    public ResponseEntity<Page<Book>> searchBooks(@PathVariable String searchText, @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return new ResponseEntity(iBookStoreService.findByAuthor(searchText, pageable), HttpStatus.OK);
+    public ResponseEntity<List<Book>> searchBooks(@PathVariable String searchText) {
+        return new ResponseEntity(iBookStoreService.searchBooks(searchText), HttpStatus.OK);
     }
 }
