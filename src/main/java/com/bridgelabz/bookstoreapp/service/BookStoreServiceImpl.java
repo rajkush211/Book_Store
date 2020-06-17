@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.cache.annotation.Cacheable;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -115,5 +116,18 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     @Override
     public List<Book> getAll() {
         return bookStoreRepository.findAll();
+    }
+
+    @Override
+    public List<Book> searchBooks(String searchText) {
+        List<Book> bookList = bookStoreRepository.findAll();
+        List<Book> searchList = new ArrayList<>();
+        for (int book = 0; book < bookList.size(); book++) {
+            if (bookList.get(book).getAuthor().toLowerCase().contains(searchText.toLowerCase()) ||
+                    bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())){
+                searchList.add(bookList.get(book));
+            }
+        }
+        return searchList;
     }
 }

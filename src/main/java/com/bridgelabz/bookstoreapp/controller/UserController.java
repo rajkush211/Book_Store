@@ -25,9 +25,9 @@ public class UserController {
         return new ResponseEntity(iBookStoreService.getAllBook(pageable), HttpStatus.OK);
     }
 
-    @GetMapping("/{author}")
-    public ResponseEntity<Page<Book>> booksByAuthor(@PathVariable String author, @PageableDefault(page = 0, size = 10) Pageable pageable, @RequestHeader String Authorization) {
-        return new ResponseEntity(iBookStoreService.findByAuthor(author, pageable), HttpStatus.OK);
+    @GetMapping("/{searchText}")
+    public ResponseEntity<Page<Book>> booksByAuthor(@PathVariable String searchText, @PageableDefault(page = 0, size = 10) Pageable pageable, @RequestHeader String Authorization) {
+        return new ResponseEntity(iBookStoreService.findByAuthor(searchText, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-asc/price")
