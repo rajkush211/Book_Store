@@ -7,6 +7,8 @@ import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
+@PropertySource("classpath:message.properties")
 public class BookStoreServiceImpl implements IBookStoreService  {
 
     @Autowired
@@ -29,6 +32,9 @@ public class BookStoreServiceImpl implements IBookStoreService  {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private Environment environment;
 
     @Override
     public String loadBookData() {
@@ -50,7 +56,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "CSV file Loaded Successfully";
+        return environment.getProperty("CSV_FILE_LOADED");
     }
 
     @Override
@@ -77,7 +83,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
     public String addNewBook(BookDto bookDto) {
         Book book = converterService.convertToBookEntity(bookDto);
         bookStoreRepository.save(book);
-        return "Book successfully added";
+        return environment.getProperty("BOOK_ADDED");
     }
 
     @Override
@@ -101,7 +107,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "CSV file Loaded Successfully";
+        return environment.getProperty("CSV_FILE_LOADED");
     }
 
     @Override
@@ -109,7 +115,7 @@ public class BookStoreServiceImpl implements IBookStoreService  {
         Optional<User> user = userRepository.findById(userId);
         user.get().setVerified(true);
         userRepository.save(user.get());
-        return "Congratulations!! Your account is verified.";
+        return environment.getProperty("ACCOUNT_IS_VERIFIED");
     }
 
     @Override

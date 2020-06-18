@@ -13,6 +13,8 @@ import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.JwtUtils;
 import com.bridgelabz.bookstoreapp.utility.RabbitMq;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -30,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@PropertySource("classpath:message.properties")
 public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
 
     @Autowired
@@ -52,6 +55,9 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
 
     @Autowired
     private RabbitMq rabbitMq;
+
+    @Autowired
+    private Environment environment;
 
     @Override
     public ResponseEntity logInUser(LoginRequest loginRequest) {
@@ -76,7 +82,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
                     userDetails.getEmail(),
                     roles));
         } else {
-            return new ResponseEntity("Please verify your account by visiting your email account to proceed!!", HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            return new ResponseEntity(environment.getProperty("VERIFY_ACCOUNT"), HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
         }
     }
 
@@ -85,13 +91,13 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new MessageResponse(environment.getProperty("USERNAME_NOT_AVAILABLE")));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+                    .body(new MessageResponse(environment.getProperty("EMAIL_IS_TAKEN")));
         }
 
         // Create new user's account
@@ -105,7 +111,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         if (strRoles == null) {
 //            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
 //                    .orElseThrow(() ->
-            throw new RuntimeException("Error: Role is not found.");
+            throw new RuntimeException(environment.getProperty("ROLE_NOT_FOUND"));
 //            );
 //            roles.add(userRole);
         } else {
@@ -113,13 +119,13 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
                 switch (role) {
                     case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(environment.getProperty("ROLE_NOT_FOUND")));
                         roles.add(adminRole);
 
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException(environment.getProperty("ROLE_NOT_FOUND")));
                         roles.add(userRole);
                 }
             });
@@ -127,13 +133,13 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         user.setRoles(roles);
         userRepository.save(user);
         sendEmailToVerify(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse(environment.getProperty("USER_REGISTERED")));
     }
 
     private void sendEmailToVerify(User user) throws MailException {
         emailDto.setTo(user.getEmail());
         emailDto.setFrom("${EMAIL}");
-        emailDto.setSubject("Welcome to Book Store, Thank you for registering with us!!");
+        emailDto.setSubject(environment.getProperty("WELCOME_HEADER"));
         emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
         rabbitMq.sendMessageToQueue(emailDto);
     }

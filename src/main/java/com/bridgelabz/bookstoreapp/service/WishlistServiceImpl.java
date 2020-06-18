@@ -8,6 +8,8 @@ import com.bridgelabz.bookstoreapp.repository.WishlistRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@PropertySource("classpath:message.properties")
 public class WishlistServiceImpl implements IWishlistService  {
 
     @Autowired
@@ -27,20 +30,23 @@ public class WishlistServiceImpl implements IWishlistService  {
     @Autowired
     private BookStoreRepository bookStoreRepository;
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public String addToWishlist(WishlistDto wishlistDto) {
         Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
         if(wishlistRepository.existsWishlistByBookId(wishlist.getBookId()) && wishlistRepository.existsWishlistByUserId(wishlist.getUserId()))
             wishlistRepository.deleteWishlistByBookIdAndUserId(wishlist.getBookId(), wishlist.getUserId());
         wishlistRepository.save(wishlist);
-        return "Added to Wishlist successfully";
+        return environment.getProperty("ADDED_TO_WISHLIST");
     }
 
     @Override
     public String removeFromWishlist(WishlistDto wishlistDto) {
         Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
         wishlistRepository.deleteWishlistByBookIdAndUserId(wishlist.getBookId(), wishlist.getUserId());
-        return "Removed from Wishlist successfully";
+        return environment.getProperty("REMOVED_FROM_WISHLIST");
     }
 
     @Override

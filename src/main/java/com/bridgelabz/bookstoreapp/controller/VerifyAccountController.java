@@ -26,7 +26,7 @@ public class VerifyAccountController {
     private IBookStoreService iBookStoreService;
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     @GetMapping("/{userId}")
     public ResponseEntity<String> verifyAccount(@PathVariable long userId) {

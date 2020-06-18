@@ -8,14 +8,18 @@ import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.CartRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional
+@PropertySource("classpath:message.properties")
 public class CartServiceImpl implements ICartService {
 
     @Autowired
@@ -27,20 +31,23 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private BookStoreRepository bookStoreRepository;
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public String addToCart(CartDto cartDto) {
         Cart cart = converterService.convertToCartEntity(cartDto);
         if (cartRepository.existsCartByUserId(cart.getUserId()) && cartRepository.existsCartByBookId(cart.getBookId()))
             cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
         cartRepository.save(cart);
-        return "Added to cart successfully";
+        return environment.getProperty("ADDED_TO_CART");
     }
 
     @Override
     public String removeFromCart(CartDto cartDto) {
         Cart cart = converterService.convertToCartEntity(cartDto);
         cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-        return "Book Removed from cart Successfully";
+        return environment.getProperty("REMOVED_FROM_CART");
     }
 
     @Override
