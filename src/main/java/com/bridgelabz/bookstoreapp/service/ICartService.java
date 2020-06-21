@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface ICartService {
-    String addToCart(CartDto cartDto);
+    String addToCart(CartDto cartDto, String token);
 
-    String removeFromCart(CartDto cartDto);
+    String removeFromCart(CartDto cartDto, String token);
 
-    List<Book> getAllCartBooks(int userId);
-
-    List<CartQtyDto> getBooks(int userId);
+    List<CartQtyDto> getCartBooks(String token);
 }

@@ -6,7 +6,7 @@ import com.bridgelabz.bookstoreapp.entity.Wishlist;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.WishlistRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
-import org.modelmapper.ModelMapper;
+import com.bridgelabz.bookstoreapp.utility.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -19,43 +19,60 @@ import java.util.List;
 @Service
 @Transactional
 @PropertySource("classpath:message.properties")
-public class WishlistServiceImpl implements IWishlistService  {
+public class WishlistServiceImpl implements IWishlistService {
 
     @Autowired
     private ConverterService converterService;
 
     @Autowired
+    private BookStoreRepository bookStoreRepository;
+
+    @Autowired
     private WishlistRepository wishlistRepository;
 
     @Autowired
-    private BookStoreRepository bookStoreRepository;
+    private JwtUtils jwtUtils;
 
     @Autowired
     private Environment environment;
 
     @Override
-    public String addToWishlist(WishlistDto wishlistDto) {
-        Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
-        if(wishlistRepository.existsWishlistByBookId(wishlist.getBookId()) && wishlistRepository.existsWishlistByUserId(wishlist.getUserId()))
-            wishlistRepository.deleteWishlistByBookIdAndUserId(wishlist.getBookId(), wishlist.getUserId());
-        wishlistRepository.save(wishlist);
-        return environment.getProperty("ADDED_TO_WISHLIST");
-    }
-
-    @Override
-    public String removeFromWishlist(WishlistDto wishlistDto) {
-        Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
-        wishlistRepository.deleteWishlistByBookIdAndUserId(wishlist.getBookId(), wishlist.getUserId());
-        return environment.getProperty("REMOVED_FROM_WISHLIST");
-    }
-
-    @Override
-    public List<Book> getAllBooksList(int userId) {
-        List<Book> wishlistBooks = new ArrayList<>();
-        List<Wishlist> allByUserId = wishlistRepository.findAllByUserId(userId);
-        for(Wishlist wishlist : allByUserId) {
-            wishlistBooks.add(bookStoreRepository.findById(wishlist.getBookId()));
+    public String addToWishlist(WishlistDto wishlistDto, String token) {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
+            wishlist.setUsername(username);
+            if (wishlistRepository.existsWishlistByUsername(wishlist.getUsername()))
+                wishlistRepository.deleteWishlistByBookIdAndUsername(wishlist.getBookId(), wishlist.getUsername());
+            wishlistRepository.save(wishlist);
+            return environment.getProperty("ADDED_TO_WISHLIST");
         }
-        return wishlistBooks;
+        return environment.getProperty("JWT_NOT_VALID");
+    }
+
+    @Override
+    public String removeFromWishlist(WishlistDto wishlistDto, String token) {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
+            wishlist.setUsername(username);
+            wishlistRepository.deleteWishlistByBookIdAndUsername(wishlist.getBookId(), wishlist.getUsername());
+            return environment.getProperty("REMOVED_FROM_WISHLIST");
+        }
+        return environment.getProperty("JWT_NOT_VALID");
+    }
+
+    @Override
+    public List<Book> getAllBooksList(String token) {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            List<Book> wishlistBooks = new ArrayList<>();
+            List<Wishlist> allByUsername = wishlistRepository.findAllByUsername(username);
+            for (Wishlist wishlist : allByUsername) {
+                wishlistBooks.add(bookStoreRepository.findById(wishlist.getBookId()));
+            }
+            return wishlistBooks;
+        }
+        return null;
     }
 }

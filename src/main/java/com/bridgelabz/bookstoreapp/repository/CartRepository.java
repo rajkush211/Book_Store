@@ -12,18 +12,18 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-    boolean existsCartByUserId(int userId);
+    boolean existsCartByUsername(String username);
     boolean existsCartByBookId(int bookId);
-    List<Cart> findAllByUserId(int userId);
+    List<Cart> findAllByUsername(String username);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Cart cart WHERE cart.bookId = :bookId AND cart.userId = :userId")
-    void deleteCartByBookIdAndUserId(@Param("bookId") int bookId, @Param("userId") int userId);
+    @Query("DELETE FROM Cart cart WHERE cart.bookId = :bookId AND cart.username = :username")
+    void deleteCartByBookIdAndUsername(@Param("bookId") int bookId, @Param("username") String username);
 
-    Cart findByUserId(int userId);
+    Cart findByUsername(String username);
 
-    CartDto findByBookId(int userId);
+    CartDto findByBookId(int bookId);
 
-    CartDto findByBookIdAndUserId(int bookId, int userId);
+    CartDto findByBookIdAndUsername(int bookId,String username);
 }

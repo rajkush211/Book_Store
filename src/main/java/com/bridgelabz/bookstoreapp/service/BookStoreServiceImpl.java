@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 @Service
 @PropertySource("classpath:message.properties")
-public class BookStoreServiceImpl implements IBookStoreService  {
+public class BookStoreServiceImpl implements IBookStoreService {
 
     @Autowired
     private BookStoreRepository bookStoreRepository;
@@ -125,14 +125,15 @@ public class BookStoreServiceImpl implements IBookStoreService  {
 
     @Override
     public List<Book> searchBooks(String searchText) {
-        List<Book> bookList = bookStoreRepository.findAll();
         List<Book> searchList = new ArrayList<>();
+        List<Book> bookList = bookStoreRepository.findAll();
         for (int book = 0; book < bookList.size(); book++) {
             if (bookList.get(book).getAuthor().toLowerCase().contains(searchText.toLowerCase()) ||
-                    bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())){
+                    bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())) {
                 searchList.add(bookList.get(book));
             }
         }
         return searchList;
     }
+
 }

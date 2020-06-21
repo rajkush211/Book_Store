@@ -1,7 +1,5 @@
 package com.bridgelabz.bookstoreapp.entity;
 
-import org.springframework.data.redis.core.RedisHash;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -15,7 +13,7 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +21,7 @@ public class User {
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "username", unique = true)
     private String username;
 
     @NotBlank
@@ -42,6 +41,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany
+    @JoinColumn(name = "username", referencedColumnName = "username", insertable = false, updatable = false)
+    private List<Cart> cartList;
+
+    @OneToMany
+    @JoinColumn(name = "username", referencedColumnName = "username", insertable = false, updatable = false)
+    private List<Wishlist> wishlistList;
+
     public User() {
     }
 
@@ -49,6 +56,22 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public List<Cart> getCartList() {
+        return cartList;
+    }
+
+    public void setCartList(List<Cart> cartList) {
+        this.cartList = cartList;
+    }
+
+    public List<Wishlist> getWishlistList() {
+        return wishlistList;
+    }
+
+    public void setWishlistList(List<Wishlist> wishlistList) {
+        this.wishlistList = wishlistList;
     }
 
     public Long getId() {

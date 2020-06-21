@@ -2,18 +2,18 @@ package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.CartDto;
 import com.bridgelabz.bookstoreapp.dto.CartQtyDto;
-import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.entity.Cart;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.CartRepository;
+import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
+import com.bridgelabz.bookstoreapp.utility.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,62 +26,68 @@ public class CartServiceImpl implements ICartService {
     private ConverterService converterService;
 
     @Autowired
+    private BookStoreRepository bookStoreRepository;
+
+    @Autowired
     private CartRepository cartRepository;
 
     @Autowired
-    private BookStoreRepository bookStoreRepository;
+    private JwtUtils jwtUtils;
 
     @Autowired
     private Environment environment;
 
     @Override
-    public String addToCart(CartDto cartDto) {
-        Cart cart = converterService.convertToCartEntity(cartDto);
-        if (cartRepository.existsCartByUserId(cart.getUserId()) && cartRepository.existsCartByBookId(cart.getBookId()))
-            cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-        cartRepository.save(cart);
-        return environment.getProperty("ADDED_TO_CART");
-    }
-
-    @Override
-    public String removeFromCart(CartDto cartDto) {
-        Cart cart = converterService.convertToCartEntity(cartDto);
-        cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-        return environment.getProperty("REMOVED_FROM_CART");
-    }
-
-    @Override
-    public List<Book> getAllCartBooks(int userId) {
-        List<Book> cartBooks = new ArrayList<>();
-        List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
-        for (Cart cart : allByUserId) {
-            if (cart.getBookQuantity() == 0)
-                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-            cartBooks.add(bookStoreRepository.findById(cart.getBookId()));
+    public String addToCart(CartDto cartDto, String token) {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            Cart cart = converterService.convertToCartEntity(cartDto);
+            cart.setUsername(username);
+            if (cartRepository.existsCartByUsername(username) && cartRepository.existsCartByBookId(cart.getBookId()))
+                cartRepository.deleteCartByBookIdAndUsername(cart.getBookId(), cart.getUsername());
+            cartRepository.save(cart);
+            return environment.getProperty("ADDED_TO_CART");
         }
-        return cartBooks;
+        return environment.getProperty("JWT_NOT_VALID");
     }
 
     @Override
-    public List<CartQtyDto> getBooks(int userId) {
+    public String removeFromCart(CartDto cartDto, String token) {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            Cart cart = converterService.convertToCartEntity(cartDto);
+            cart.setUsername(username);
+            cartRepository.deleteCartByBookIdAndUsername(cart.getBookId(), cart.getUsername());
+            return environment.getProperty("REMOVED_FROM_CART");
+        }
+        return environment.getProperty("JWT_NOT_VALID");
+    }
+
+    @Override
+    public List<CartQtyDto> getCartBooks(String token) {
         List<CartQtyDto> cartQtyDto = new ArrayList<>();
         try {
-            List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
-            for (Cart cart : allByUserId) {
-                if (cart.getBookQuantity() == 0)
-                    cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-                cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
-                        bookStoreRepository.findById(cart.getBookId()).getAuthor(),
-                        bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
-                        bookStoreRepository.findById(cart.getBookId()).getPicPath(),
-                        bookStoreRepository.findById(cart.getBookId()).getPrice(),
-                        cartRepository.findByBookIdAndUserId(cart.getBookId(), cart.getUserId()).getBookQuantity()));
+            if (jwtUtils.validateJwtToken(token)) {
+                String username = jwtUtils.getUserNameFromJwtToken(token);
+                List<Cart> allByUsername = cartRepository.findAllByUsername(username);
+                for (Cart cart : allByUsername) {
+                    if (cart.getBookQuantity() == 0)
+                        cartRepository.deleteCartByBookIdAndUsername(cart.getBookId(), cart.getUsername());
+                    cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
+                            bookStoreRepository.findById(cart.getBookId()).getAuthor(),
+                            bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
+                            bookStoreRepository.findById(cart.getBookId()).getPicPath(),
+                            bookStoreRepository.findById(cart.getBookId()).getPrice(),
+                            cartRepository.findByBookIdAndUsername(cart.getBookId(), cart.getUsername()).getBookQuantity()));
+                }
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
         return cartQtyDto;
     }
+
+}
 
 
 //    @Override
@@ -95,6 +101,6 @@ public class CartServiceImpl implements ICartService {
 //        }
 //        return cartBooks;
 //    }
-}
+
 
 

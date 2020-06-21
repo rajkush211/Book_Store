@@ -25,21 +25,23 @@ public class CartController {
 
 //    @CacheEvict(value = "Book", key = "#cartDto.userId")
     @PutMapping("/add-update")
-    public String addToCart(@RequestBody CartDto cartDto) {
+    public String addToCart(@RequestBody CartDto cartDto, @RequestHeader String token) {
+//        System.out.println(token);
         System.out.println("Updating records");
-        return iCartService.addToCart(cartDto);
+        return iCartService.addToCart(cartDto, token);
     }
 
 //    @CacheEvict(value = "Book", key = "#cartDto.userId")
     @PutMapping("/remove")
-    public ResponseEntity<String> removeFromCart(@RequestBody CartDto cartDto) {
-        return new ResponseEntity<String>(iCartService.removeFromCart(cartDto), HttpStatus.OK);
+    public ResponseEntity<String> removeFromCart(@RequestBody CartDto cartDto, @RequestHeader String token) {
+        return new ResponseEntity<String>(iCartService.removeFromCart(cartDto, token), HttpStatus.OK);
     }
 
 //    @Cacheable(value = "Book", key = "#userId")
-    @GetMapping("/getall/{userId}")
-    public List<CartQtyDto> getall(@PathVariable int userId) {
+    @GetMapping("/getall")
+    public List<CartQtyDto> getall(@RequestHeader String token) {
+//        System.out.println(Authorization);
         System.out.println("getting books from cart");
-        return iCartService.getBooks(userId);
+        return iCartService.getCartBooks(token);
     }
 }

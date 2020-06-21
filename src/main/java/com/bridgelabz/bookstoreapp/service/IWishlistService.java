@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface IWishlistService {
 
-    String addToWishlist(WishlistDto wishlistDto);
+    String addToWishlist(WishlistDto wishlistDto, String token);
 
-    String removeFromWishlist(WishlistDto wishlistDto);
+    String removeFromWishlist(WishlistDto wishlistDto, String token);
 
-    List<Book> getAllBooksList(int userId);
+    List<Book> getAllBooksList(String token);
 }
