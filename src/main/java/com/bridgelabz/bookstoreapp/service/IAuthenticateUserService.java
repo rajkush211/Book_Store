@@ -8,4 +8,6 @@ public interface IAuthenticateUserService {
 
     ResponseEntity logInUser(LoginRequest loginRequest);
     ResponseEntity registerUser(SignupRequest signUpRequest);
+    String forgotPassword(String email);
+    String resetPassword(String newPassword, String token);
 }

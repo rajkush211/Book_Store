@@ -103,7 +103,8 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+                encoder.encode(signUpRequest.getPassword()),
+                signUpRequest.getPhoneNumber());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -134,6 +135,38 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         userRepository.save(user);
         sendEmailToVerify(user);
         return ResponseEntity.ok(new MessageResponse(environment.getProperty("USER_REGISTERED")));
+    }
+
+    @Override
+    public String forgotPassword(String email) {
+        if (userRepository.existsByEmail(email)) {
+            User user = userRepository.findByEmail(email);
+            String token = jwtUtils.jwtTokenUsingUsername(user.getUsername());
+            sendEmailToResetPassword(email, token);
+//            System.out.println(jwtUtils.getUserNameFromJwtToken(token));
+            return environment.getProperty("EMAIL_SENT");
+        }
+        return environment.getProperty("EMAIL_NOT_EXISTS");
+    }
+
+    @Override
+    public String resetPassword(String newPassword, String token) {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            Optional<User> user = userRepository.findByUsername(username);
+            user.get().setPassword(encoder.encode(newPassword));
+            userRepository.save(user.get());
+            return environment.getProperty("PASSWORD_CHANGED");
+        }
+        return environment.getProperty("JWT_NOT_VALID");
+    }
+
+    private void sendEmailToResetPassword(String email, String token) {
+        emailDto.setTo(email);
+        emailDto.setFrom("${EMAIL}");
+        emailDto.setSubject(environment.getProperty("WELCOME_HEADER"));
+        emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/api/auth/resetpassword" + token);
+        rabbitMq.sendMessageToQueue(emailDto);
     }
 
     private void sendEmailToVerify(User user) throws MailException {

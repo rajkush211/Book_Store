@@ -4,7 +4,9 @@ import com.bridgelabz.bookstoreapp.payload.request.LoginRequest;
 import com.bridgelabz.bookstoreapp.payload.request.SignupRequest;
 import com.bridgelabz.bookstoreapp.service.AuthenticateUserServiceImpl;
 import com.bridgelabz.bookstoreapp.service.IAuthenticateUserService;
+import org.modelmapper.internal.Errors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +22,21 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
        return iAuthenticateUserService.logInUser(loginRequest);
     }
 
     @PostMapping("/signup")
     public ResponseEntity registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-
         return iAuthenticateUserService.registerUser(signUpRequest);
+    }
+
+    @PostMapping("/forgotpassword")
+    public String forgotPassword(@RequestBody String email) {
+        return iAuthenticateUserService.forgotPassword(email);
+    }
+
+    @PutMapping("/resetpassword")
+    public String resetPassword(@RequestBody String newPassword, @RequestHeader String token) {
+        return iAuthenticateUserService.resetPassword(newPassword, token);
     }
 }

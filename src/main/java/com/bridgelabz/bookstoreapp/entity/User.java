@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "email"),
         })
 public class User implements Serializable {
 
@@ -33,6 +33,10 @@ public class User implements Serializable {
     @Size(max = 120)
     private String password;
 
+    @NotBlank
+//    @Pattern(regexp="(^$|[0-9]{10})")
+    private String phoneNumber;
+
     private boolean isVerified;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -52,10 +56,19 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, String phoneNumber) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public List<Cart> getCartList() {
