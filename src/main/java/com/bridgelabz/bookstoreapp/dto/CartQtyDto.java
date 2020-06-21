@@ -20,6 +20,9 @@ public class CartQtyDto implements Serializable {
         this.bookQuantity = bookQuantity;
     }
 
+    public CartQtyDto() {
+    }
+
     public int getId() {
         return id;
     }

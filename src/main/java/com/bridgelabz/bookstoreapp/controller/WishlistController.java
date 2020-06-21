@@ -32,7 +32,7 @@ public class WishlistController {
     }
 
 //    @Cacheable(value = "Book", key = "#userId")
-    @GetMapping("/getall/{userId}")
+    @GetMapping("/getall")
     public ResponseEntity<List<Book>> getAllBooksList(@RequestHeader String token) {
         return new ResponseEntity<List<Book>>(iWishlistService.getAllBooksList(token), HttpStatus.OK);
     }

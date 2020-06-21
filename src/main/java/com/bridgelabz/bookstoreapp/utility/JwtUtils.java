@@ -34,11 +34,13 @@ public class JwtUtils {
     }
 
     public String getUserNameFromJwtToken(String token) {
+        System.out.println("verifying");
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
+            System.out.println("verify");
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
