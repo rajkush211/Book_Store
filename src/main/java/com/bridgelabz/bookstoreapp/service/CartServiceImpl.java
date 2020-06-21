@@ -3,13 +3,17 @@ package com.bridgelabz.bookstoreapp.service;
 import com.bridgelabz.bookstoreapp.Exception.BookStoreException;
 import com.bridgelabz.bookstoreapp.dto.CartDto;
 import com.bridgelabz.bookstoreapp.dto.CartQtyDto;
+import com.bridgelabz.bookstoreapp.dto.EmailDto;
 import com.bridgelabz.bookstoreapp.entity.Cart;
 import com.bridgelabz.bookstoreapp.entity.OrderNumber;
+import com.bridgelabz.bookstoreapp.entity.User;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.CartRepository;
 import com.bridgelabz.bookstoreapp.repository.OrderNumberRepository;
+import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import com.bridgelabz.bookstoreapp.utility.JwtUtils;
+import com.bridgelabz.bookstoreapp.utility.RabbitMq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,14 +33,28 @@ public class CartServiceImpl implements ICartService {
 
     @Autowired
     private ConverterService converterService;
+
     @Autowired
     private BookStoreRepository bookStoreRepository;
+
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EmailDto emailDto;
+
+    @Autowired
+    private RabbitMq rabbitMq;
+
     @Autowired
     private OrderNumberRepository orderNumberRepository;
+
     @Autowired
     private JwtUtils jwtUtils;
+
     @Autowired
     private Environment environment;
 
@@ -104,20 +123,32 @@ public class CartServiceImpl implements ICartService {
                     throw new BookStoreException(BookStoreException.ExceptionType.QUANTITY_EXCEEDED, environment.getProperty("QUANTITY_EXCEEDED"));
                 }
             }
+            Optional<User> byUsername = userRepository.findByUsername(username);
+            String email = byUsername.get().getEmail();
             OrderNumber orderNumberNew = new OrderNumber();
             OrderNumber orderNumber = orderNumberRepository.findFirstByOrderByIdDesc();
             if (orderNumber == null) {
                 orderNumberNew.setUsername(username);
                 orderNumberNew.setOrderId(ORDER_ID_NUM_ADD);
                 orderNumberRepository.save(orderNumberNew);
+                sendEmailWithOrderDetails(email, ORDER_ID_NUM_ADD);
                 return orderNumberNew.getOrderId();
             }
             orderNumberNew.setUsername(username);
             orderNumberNew.setOrderId(ORDER_ID_NUM_ADD + orderNumber.getId());
             orderNumberRepository.save(orderNumberNew);
+            sendEmailWithOrderDetails(email, ORDER_ID_NUM_ADD + orderNumber.getId());
             return orderNumberNew.getOrderId();
         } else
             throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
+    }
+
+    private void sendEmailWithOrderDetails(String email, int orderId) {
+        emailDto.setTo(email);
+        emailDto.setFrom("${EMAIL}");
+        emailDto.setSubject(environment.getProperty("ORDER_PLACED"));
+        emailDto.setBody("Thank you for placing order with us, your order id is " + orderId + " (: Happy reading :)");
+        rabbitMq.sendMessageToQueue(emailDto);
     }
 }
 
