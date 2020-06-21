@@ -17,8 +17,17 @@ public class Book implements Serializable {
     private int price;
     @Column(length = 2000)
     private String description;
+    private int quantity;
 
     public Book() {
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public int getId() {

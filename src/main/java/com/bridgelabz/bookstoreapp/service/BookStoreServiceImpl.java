@@ -47,10 +47,11 @@ public class BookStoreServiceImpl implements IBookStoreService {
                 Book book = new Book();
                 book.setAuthor(data[1].replaceAll("'", ""));
                 book.setNameOfBook(data[2].replaceAll("'", ""));
-                book.setPicPath(data[3].replaceAll("'", ""));
-                book.setPrice(Integer.parseInt(data[4].replaceAll("'", "")));
-                IntStream.range(6, data.length - 1).forEach(column -> data[5] += "," + data[column]);
-                book.setDescription(data[5]);
+                book.setQuantity(Integer.parseInt(data[3].replaceAll("'", "")));
+                book.setPicPath(data[4].replaceAll("'", ""));
+                book.setPrice(Integer.parseInt(data[5].replaceAll("'", "")));
+                IntStream.range(7, data.length - 1).forEach(column -> data[6] += "," + data[column]);
+                book.setDescription(data[6]);
                 bookStoreRepository.save(book);
             }
         } catch (IOException e) {

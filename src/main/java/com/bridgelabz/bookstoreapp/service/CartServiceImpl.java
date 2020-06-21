@@ -25,6 +25,7 @@ import java.util.List;
 public class CartServiceImpl implements ICartService {
 
     private static final int ORDER_ID_NUM_ADD = 100000;
+
     @Autowired
     private ConverterService converterService;
     @Autowired
@@ -92,6 +93,17 @@ public class CartServiceImpl implements ICartService {
     public Integer getOrderId(String token) throws BookStoreException {
         if (jwtUtils.validateJwtToken(token)) {
             String username = jwtUtils.getUserNameFromJwtToken(token);
+            List<CartQtyDto> cartBooks = getCartBooks(token);
+            for (CartQtyDto cartQtyDto : cartBooks) {
+                int id = cartQtyDto.getId();
+                int userBookQuantity = cartQtyDto.getBookQuantity();
+                int storeQuantity = bookStoreRepository.findById(id).getQuantity();
+                if (userBookQuantity <= storeQuantity) {
+                    bookStoreRepository.findById(id).setQuantity(storeQuantity - userBookQuantity);
+                } else {
+                    throw new BookStoreException(BookStoreException.ExceptionType.QUANTITY_EXCEEDED, environment.getProperty("QUANTITY_EXCEEDED"));
+                }
+            }
             OrderNumber orderNumberNew = new OrderNumber();
             OrderNumber orderNumber = orderNumberRepository.findFirstByOrderByIdDesc();
             if (orderNumber == null) {
