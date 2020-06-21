@@ -1,11 +1,11 @@
 package com.bridgelabz.bookstoreapp.service;
 
+import com.bridgelabz.bookstoreapp.Exception.BookStoreException;
 import com.bridgelabz.bookstoreapp.dto.CartDto;
 import com.bridgelabz.bookstoreapp.dto.CartQtyDto;
 import com.bridgelabz.bookstoreapp.entity.Cart;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.CartRepository;
-import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import com.bridgelabz.bookstoreapp.utility.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class CartServiceImpl implements ICartService {
     private Environment environment;
 
     @Override
-    public String addToCart(CartDto cartDto, String token) {
+    public String addToCart(CartDto cartDto, String token) throws BookStoreException {
         if (jwtUtils.validateJwtToken(token)) {
             String username = jwtUtils.getUserNameFromJwtToken(token);
             Cart cart = converterService.convertToCartEntity(cartDto);
@@ -47,20 +47,20 @@ public class CartServiceImpl implements ICartService {
                 cartRepository.deleteCartByBookIdAndUsername(cart.getBookId(), cart.getUsername());
             cartRepository.save(cart);
             return environment.getProperty("ADDED_TO_CART");
-        }
-        return environment.getProperty("JWT_NOT_VALID");
+        } else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
     }
 
     @Override
-    public String removeFromCart(CartDto cartDto, String token) {
+    public String removeFromCart(CartDto cartDto, String token) throws BookStoreException {
         if (jwtUtils.validateJwtToken(token)) {
             String username = jwtUtils.getUserNameFromJwtToken(token);
             Cart cart = converterService.convertToCartEntity(cartDto);
             cart.setUsername(username);
             cartRepository.deleteCartByBookIdAndUsername(cart.getBookId(), cart.getUsername());
             return environment.getProperty("REMOVED_FROM_CART");
-        }
-        return environment.getProperty("JWT_NOT_VALID");
+        } else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
     }
 
     @Override

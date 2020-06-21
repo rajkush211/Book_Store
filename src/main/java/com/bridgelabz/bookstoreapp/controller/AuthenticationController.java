@@ -31,12 +31,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgotpassword")
-    public String forgotPassword(@RequestBody String email) {
-        return iAuthenticateUserService.forgotPassword(email);
+    public ResponseEntity forgotPassword(@RequestBody String email) {
+        return new ResponseEntity(iAuthenticateUserService.forgotPassword(email), HttpStatus.OK);
     }
 
     @PutMapping("/resetpassword")
-    public String resetPassword(@RequestBody String newPassword, @RequestHeader String token) {
-        return iAuthenticateUserService.resetPassword(newPassword, token);
+    public ResponseEntity resetPassword(@RequestBody String newPassword, @RequestHeader String token) {
+        return new ResponseEntity(iAuthenticateUserService.resetPassword(newPassword, token), HttpStatus.OK);
+    }
+
+    @GetMapping("/resetpassword/{token}")
+    public ResponseEntity  validateToken(@PathVariable String token) {
+        return new ResponseEntity(iAuthenticateUserService.isTokenValid(token), HttpStatus.OK);
     }
 }

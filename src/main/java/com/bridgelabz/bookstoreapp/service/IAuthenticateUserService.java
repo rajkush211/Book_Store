@@ -10,4 +10,6 @@ public interface IAuthenticateUserService {
     ResponseEntity registerUser(SignupRequest signUpRequest);
     String forgotPassword(String email);
     String resetPassword(String newPassword, String token);
+
+    Boolean isTokenValid(String token);
 }

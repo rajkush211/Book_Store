@@ -1,5 +1,6 @@
 package com.bridgelabz.bookstoreapp.controller;
 
+import com.bridgelabz.bookstoreapp.Exception.BookStoreException;
 import com.bridgelabz.bookstoreapp.dto.CartDto;
 import com.bridgelabz.bookstoreapp.dto.CartQtyDto;
 import com.bridgelabz.bookstoreapp.entity.Book;
@@ -25,7 +26,7 @@ public class CartController {
 
 //    @CacheEvict(value = "Book", key = "#cartDto.userId")
     @PutMapping("/add-update")
-    public String addToCart(@RequestBody CartDto cartDto, @RequestHeader String token) {
+    public String addToCart(@RequestBody CartDto cartDto, @RequestHeader String token) throws BookStoreException {
 //        System.out.println(token);
         System.out.println("Updating records");
         return iCartService.addToCart(cartDto, token);
@@ -33,7 +34,7 @@ public class CartController {
 
 //    @CacheEvict(value = "Book", key = "#cartDto.userId")
     @PutMapping("/remove")
-    public ResponseEntity<String> removeFromCart(@RequestBody CartDto cartDto, @RequestHeader String token) {
+    public ResponseEntity<String> removeFromCart(@RequestBody CartDto cartDto, @RequestHeader String token) throws BookStoreException {
         return new ResponseEntity<String>(iCartService.removeFromCart(cartDto, token), HttpStatus.OK);
     }
 

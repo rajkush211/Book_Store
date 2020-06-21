@@ -1,5 +1,6 @@
 package com.bridgelabz.bookstoreapp.service;
 
+import com.bridgelabz.bookstoreapp.Exception.BookStoreException;
 import com.bridgelabz.bookstoreapp.dto.WishlistDto;
 import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.entity.Wishlist;
@@ -37,7 +38,7 @@ public class WishlistServiceImpl implements IWishlistService {
     private Environment environment;
 
     @Override
-    public String addToWishlist(WishlistDto wishlistDto, String token) {
+    public String addToWishlist(WishlistDto wishlistDto, String token) throws BookStoreException {
         if (jwtUtils.validateJwtToken(token)) {
             String username = jwtUtils.getUserNameFromJwtToken(token);
             Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
@@ -46,24 +47,24 @@ public class WishlistServiceImpl implements IWishlistService {
                 wishlistRepository.deleteWishlistByBookIdAndUsername(wishlist.getBookId(), wishlist.getUsername());
             wishlistRepository.save(wishlist);
             return environment.getProperty("ADDED_TO_WISHLIST");
-        }
-        return environment.getProperty("JWT_NOT_VALID");
+        } else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
     }
 
     @Override
-    public String removeFromWishlist(WishlistDto wishlistDto, String token) {
+    public String removeFromWishlist(WishlistDto wishlistDto, String token) throws  BookStoreException {
         if (jwtUtils.validateJwtToken(token)) {
             String username = jwtUtils.getUserNameFromJwtToken(token);
             Wishlist wishlist = converterService.convertToWishlistEntity(wishlistDto);
             wishlist.setUsername(username);
             wishlistRepository.deleteWishlistByBookIdAndUsername(wishlist.getBookId(), wishlist.getUsername());
             return environment.getProperty("REMOVED_FROM_WISHLIST");
-        }
-        return environment.getProperty("JWT_NOT_VALID");
+        } else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
     }
 
     @Override
-    public List<Book> getAllBooksList(String token) {
+    public List<Book> getAllBooksList(String token) throws BookStoreException {
         if (jwtUtils.validateJwtToken(token)) {
             String username = jwtUtils.getUserNameFromJwtToken(token);
             List<Book> wishlistBooks = new ArrayList<>();
@@ -72,7 +73,8 @@ public class WishlistServiceImpl implements IWishlistService {
                 wishlistBooks.add(bookStoreRepository.findById(wishlist.getBookId()));
             }
             return wishlistBooks;
-        }
-        return null;
+        }  else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
+
     }
 }

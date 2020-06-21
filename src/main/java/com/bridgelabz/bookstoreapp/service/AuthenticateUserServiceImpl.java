@@ -161,11 +161,18 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         return environment.getProperty("JWT_NOT_VALID");
     }
 
+    @Override
+    public Boolean isTokenValid(String token) {
+        if (jwtUtils.validateJwtToken(token))
+            return true;
+        return false;
+    }
+
     private void sendEmailToResetPassword(String email, String token) {
         emailDto.setTo(email);
         emailDto.setFrom("${EMAIL}");
         emailDto.setSubject(environment.getProperty("WELCOME_HEADER"));
-        emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/api/auth/resetpassword" + token);
+        emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/api/auth/resetpassword/" + token);
         rabbitMq.sendMessageToQueue(emailDto);
     }
 
