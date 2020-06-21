@@ -40,7 +40,7 @@ public class AuthenticationController {
         return new ResponseEntity(iAuthenticateUserService.resetPassword(newPassword, token), HttpStatus.OK);
     }
 
-    @GetMapping("/resetpassword/{token}")
+    @GetMapping("emaillink/resetpassword/{token}")
     public ResponseEntity  validateToken(@PathVariable String token) {
         return new ResponseEntity(iAuthenticateUserService.isTokenValid(token), HttpStatus.OK);
     }

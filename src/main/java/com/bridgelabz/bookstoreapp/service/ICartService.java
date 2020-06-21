@@ -14,4 +14,6 @@ public interface ICartService {
     String removeFromCart(CartDto cartDto, String token) throws BookStoreException;
 
     List<CartQtyDto> getCartBooks(String token);
+
+    Integer getOrderId(String token) throws BookStoreException;
 }

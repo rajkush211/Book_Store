@@ -4,8 +4,10 @@ import com.bridgelabz.bookstoreapp.Exception.BookStoreException;
 import com.bridgelabz.bookstoreapp.dto.CartDto;
 import com.bridgelabz.bookstoreapp.dto.CartQtyDto;
 import com.bridgelabz.bookstoreapp.entity.Cart;
+import com.bridgelabz.bookstoreapp.entity.OrderNumber;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.CartRepository;
+import com.bridgelabz.bookstoreapp.repository.OrderNumberRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
 import com.bridgelabz.bookstoreapp.utility.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +24,17 @@ import java.util.List;
 @PropertySource("classpath:message.properties")
 public class CartServiceImpl implements ICartService {
 
+    private static final int ORDER_ID_NUM_ADD = 100000;
     @Autowired
     private ConverterService converterService;
-
     @Autowired
     private BookStoreRepository bookStoreRepository;
-
     @Autowired
     private CartRepository cartRepository;
-
+    @Autowired
+    private OrderNumberRepository orderNumberRepository;
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private Environment environment;
 
@@ -87,6 +88,25 @@ public class CartServiceImpl implements ICartService {
         return cartQtyDto;
     }
 
+    @Override
+    public Integer getOrderId(String token) throws BookStoreException {
+        if (jwtUtils.validateJwtToken(token)) {
+            String username = jwtUtils.getUserNameFromJwtToken(token);
+            OrderNumber orderNumberNew = new OrderNumber();
+            OrderNumber orderNumber = orderNumberRepository.findFirstByOrderByIdDesc();
+            if (orderNumber == null) {
+                orderNumberNew.setUsername(username);
+                orderNumberNew.setOrderId(ORDER_ID_NUM_ADD);
+                orderNumberRepository.save(orderNumberNew);
+                return orderNumberNew.getOrderId();
+            }
+            orderNumberNew.setUsername(username);
+            orderNumberNew.setOrderId(ORDER_ID_NUM_ADD + orderNumber.getId());
+            orderNumberRepository.save(orderNumberNew);
+            return orderNumberNew.getOrderId();
+        } else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
+    }
 }
 
 
