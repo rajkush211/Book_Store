@@ -123,6 +123,9 @@ public class CartServiceImpl implements ICartService {
                     throw new BookStoreException(BookStoreException.ExceptionType.QUANTITY_EXCEEDED, environment.getProperty("QUANTITY_EXCEEDED"));
                 }
             }
+            for (CartQtyDto books : cartBooks) {
+                cartRepository.deleteCartByBookIdAndUsername(books.getId(), username);
+            }
             Optional<User> byUsername = userRepository.findByUsername(username);
             String email = byUsername.get().getEmail();
             OrderNumber orderNumberNew = new OrderNumber();
