@@ -89,6 +89,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
     @Override
     public ResponseEntity registerUser(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            System.out.println(signUpRequest.getEmail());
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse(environment.getProperty("USERNAME_NOT_AVAILABLE")));
@@ -172,7 +173,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
         emailDto.setTo(email);
         emailDto.setFrom("${EMAIL}");
         emailDto.setSubject(environment.getProperty("WELCOME_HEADER"));
-        emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/api/auth/resetpassword/" + token);
+        emailDto.setBody("Please click this link to verify your account " + "http://localhost:3000/passwordset/" + token);
         rabbitMq.sendMessageToQueue(emailDto);
     }
 
