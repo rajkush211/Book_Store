@@ -146,6 +146,15 @@ public class CartServiceImpl implements ICartService {
             throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
     }
 
+    @Override
+    public Integer getPlaceOrderId(String token) throws BookStoreException {
+        if (jwtUtils.validateJwtToken(token)) {
+            OrderNumber firstByOrderByIdDesc = orderNumberRepository.findFirstByOrderByIdDesc();
+            return firstByOrderByIdDesc.getOrderId();
+        }else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
+    }
+
     private void sendEmailWithOrderDetails(String email, int orderId) {
         emailDto.setTo(email);
         emailDto.setFrom("${EMAIL}");

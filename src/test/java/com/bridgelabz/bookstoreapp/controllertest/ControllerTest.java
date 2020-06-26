@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -39,6 +40,7 @@ public class ControllerTest {
     private AuthenticationController authenticationController;
 
     @Test
+    @WithMockUser( roles = {"ADMIN"})
     void whenLoadCsv_shouldReturn_DataLoadedSuccessfully() throws Exception {
         String username = "aratiupare";
         String password = "aratiupare";
@@ -50,11 +52,13 @@ public class ControllerTest {
     }
 
     @Test
+    @WithMockUser( roles = {"ADMIN"})
     void whenGiveBookDto_ShouldReturnBookAdded() throws Exception {
         BookDto bookDto = new BookDto("Rajkush", "Harry Potter", "http:/www.harrypotter.com/pic", 1750, "Harry Potter description");
         String convertToJson = objectMapper.writeValueAsString(bookDto);
         when(iBookStoreService.addNewBook(any())).thenReturn(convertToJson);
         MvcResult mvcResult = this.mockMvc.perform(post("/home/admin/addbook")
+                .header("Authorization", "asdass")
                 .content(convertToJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
