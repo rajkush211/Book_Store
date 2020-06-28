@@ -81,6 +81,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
                     userDetails.getUsername(),
                     userDetails.getEmail(),
                     roles));
+
         } else {
             return new ResponseEntity(environment.getProperty("VERIFY_ACCOUNT"), HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
         }
@@ -179,7 +180,7 @@ public class AuthenticateUserServiceImpl implements IAuthenticateUserService {
 
     private void sendEmailToVerify(User user) throws MailException {
         emailDto.setTo(user.getEmail());
-        emailDto.setFrom("${EMAIL}");
+        emailDto.setFrom("aratiupare@gmail.com");
         emailDto.setSubject(environment.getProperty("WELCOME_HEADER"));
         emailDto.setBody("Please click this link to verify your account " + "http://localhost:8080/verifyaccount/" + user.getId());
         rabbitMq.sendMessageToQueue(emailDto);

@@ -1,13 +1,12 @@
 package com.bridgelabz.bookstoreapp.entity;
-
-import org.springframework.data.redis.core.RedisHash;
-
+import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
-
+//JPA repository annotation
 @Entity
+// Elasticsearch annotation.
+@Data
 public class Book implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

@@ -34,6 +34,9 @@ public class BookStoreServiceImpl implements IBookStoreService {
     private UserRepository userRepository;
 
     @Autowired
+    IElasticsearchService iElasticsearchService;
+
+    @Autowired
     private Environment environment;
 
     @Override
@@ -52,7 +55,8 @@ public class BookStoreServiceImpl implements IBookStoreService {
                 book.setPrice(Integer.parseInt(data[5].replaceAll("'", "")));
                 IntStream.range(7, data.length - 1).forEach(column -> data[6] += "," + data[column]);
                 book.setDescription(data[6]);
-                bookStoreRepository.save(book);
+                Book books = bookStoreRepository.save(book);
+                iElasticsearchService.createBook(books);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,14 +124,14 @@ public class BookStoreServiceImpl implements IBookStoreService {
     }
 
     @Override
-    public List<Book> getAll() {
-        return bookStoreRepository.findAll();
+    public List<Book> getAll(Pageable pageable) {
+        return (List<Book>) bookStoreRepository.findAll();
     }
 
     @Override
     public List<Book> searchBooks(String searchText) {
         List<Book> searchList = new ArrayList<>();
-        List<Book> bookList = bookStoreRepository.findAll();
+        List<Book> bookList = (List<Book>) bookStoreRepository.findAll();
         for (int book = 0; book < bookList.size(); book++) {
             if (bookList.get(book).getAuthor().toLowerCase().contains(searchText.toLowerCase()) ||
                     bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())) {

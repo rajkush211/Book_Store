@@ -35,9 +35,9 @@ public class VerifyAccountController {
 
     @Cacheable(value = "Book")
     @GetMapping("/all")
-    public List<Book> getAllBook() {
+    public List<Book> getAllBook(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         System.out.println(environment.getProperty("ALL_BOOKS"));
-        return iBookStoreService.getAll();
+        return iBookStoreService.getAll(pageable);
     }
 
     @GetMapping("/sort-asc/price")

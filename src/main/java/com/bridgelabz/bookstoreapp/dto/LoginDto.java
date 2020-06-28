@@ -1,5 +1,8 @@
 package com.bridgelabz.bookstoreapp.dto;
 
+//import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+//@JsonDeserialize(as = LoginDto.class)
 public class LoginDto {
 
     String emailId;

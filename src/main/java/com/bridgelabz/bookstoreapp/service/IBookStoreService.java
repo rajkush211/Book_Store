@@ -26,7 +26,7 @@ public interface IBookStoreService {
 
     String verifyUserAccount(Long userId);
 
-    List<Book> getAll();
+    List<Book> getAll(Pageable pageable);
 
     List<Book> searchBooks(String searchText);
 }

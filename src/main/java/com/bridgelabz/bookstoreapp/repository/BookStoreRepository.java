@@ -10,13 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookStoreRepository extends JpaRepository<Book, String>, PagingAndSortingRepository<Book, String> {
 
-    Page<Book> findByAuthor(String author, Pageable pageable);
-
-    Page<Book> findAllByOrderByPriceAsc(Pageable pageable);
-
     Page<Book> findAllByOrderByPriceDesc(Pageable pageable);
 
     Book findById(int bookId);
 
+    Page<Book> findAllByOrderByPriceAsc(Pageable pageable);
+
+    Page<Book> findByAuthor(String author, Pageable pageable);
 }
 
