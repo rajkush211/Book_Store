@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -51,7 +52,7 @@ public class VerifyAccountController {
     }
 
     @GetMapping("/searchbooks/{searchText}")
-    public ResponseEntity<List<Book>> searchBooks(@PathVariable String searchText) {
+    public ResponseEntity<List<Book>> searchBooks(@PathVariable String searchText) throws IOException {
         return new ResponseEntity(iBookStoreService.searchBooks(searchText), HttpStatus.OK);
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/home")
 @PreAuthorize("hasRole('USER')")
@@ -26,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/{searchText}")
-    public ResponseEntity<Book> booksByAuthor(@PathVariable String searchText, @RequestHeader String Authorization) {
+    public ResponseEntity<Book> booksByAuthor(@PathVariable String searchText, @RequestHeader String Authorization) throws IOException {
         return new ResponseEntity(iBookStoreService.searchBooks(searchText), HttpStatus.OK);
     }
 

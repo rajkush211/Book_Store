@@ -66,6 +66,7 @@ public class BookStoreServiceImpl implements IBookStoreService {
 
     @Override
     public Page<Book> getAllBook(Pageable pageable) {
+
         return bookStoreRepository.findAll(pageable);
     }
 
@@ -128,16 +129,11 @@ public class BookStoreServiceImpl implements IBookStoreService {
         return (List<Book>) bookStoreRepository.findAll();
     }
 
+    // Method to search book by text given by user
     @Override
-    public List<Book> searchBooks(String searchText) {
+    public List<Book> searchBooks(String searchText) throws IOException {
         List<Book> searchList = new ArrayList<>();
-        List<Book> bookList = (List<Book>) bookStoreRepository.findAll();
-        for (int book = 0; book < bookList.size(); book++) {
-            if (bookList.get(book).getAuthor().toLowerCase().contains(searchText.toLowerCase()) ||
-                    bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())) {
-                searchList.add(bookList.get(book));
-            }
-        }
+        searchList = iElasticsearchService.searchBook(searchText);
         return searchList;
     }
 
