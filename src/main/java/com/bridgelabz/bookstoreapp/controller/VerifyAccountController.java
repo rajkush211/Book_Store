@@ -33,25 +33,25 @@ public class VerifyAccountController {
         return new ResponseEntity(iBookStoreService.verifyUserAccount(userId), HttpStatus.OK);
     }
 
-    @Cacheable(value = "Book")
+//    @Cacheable(value = "Book")
     @GetMapping("/all")
-    public List<Book> getAllBook() {
+    public ResponseEntity<Page<Book>> getAllBook(@PageableDefault(page = 0, size = 8) Pageable pageable) {
         System.out.println(environment.getProperty("ALL_BOOKS"));
-        return iBookStoreService.getAll();
+        return new ResponseEntity(iBookStoreService.getAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-asc/price")
-    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 8)  Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceAsc(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-desc/price")
-    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 20) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 8) Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/searchbooks/{searchText}")
-    public ResponseEntity<List<Book>> searchBooks(@PathVariable String searchText) {
-        return new ResponseEntity(iBookStoreService.searchBooks(searchText), HttpStatus.OK);
+    public ResponseEntity<Page<Book>> searchBooks(@PathVariable String searchText, @PageableDefault(page = 0, size = 8) Pageable pageable) {
+        return new ResponseEntity(iBookStoreService.searchBooks(searchText, pageable), HttpStatus.OK);
     }
 }

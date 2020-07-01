@@ -3,7 +3,6 @@ package com.bridgelabz.bookstoreapp.controller;
 import com.bridgelabz.bookstoreapp.entity.Book;
 import com.bridgelabz.bookstoreapp.service.IBookStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,8 +25,8 @@ public class UserController {
     }
 
     @GetMapping("/{searchText}")
-    public ResponseEntity<Book> booksByAuthor(@PathVariable String searchText, @RequestHeader String Authorization) {
-        return new ResponseEntity(iBookStoreService.searchBooks(searchText), HttpStatus.OK);
+    public ResponseEntity<Page<Book>> searchBooksByAuthorAndName(@PathVariable String searchText, @PageableDefault(page = 0, size = 8) Pageable pageable, @RequestHeader String Authorization) {
+        return new ResponseEntity(iBookStoreService.searchBooks(searchText, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-asc/price")

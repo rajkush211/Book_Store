@@ -24,7 +24,7 @@ public class RabbitMq {
         rabbitTemplate.convertAndSend(exchange, routingKey, emailDto);
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
+//    @RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
     public void send(EmailDto email) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email.getTo());
@@ -36,7 +36,7 @@ public class RabbitMq {
     }
 
     // LISTENER
-//    @RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
+    @RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
     public void receiveMessage(EmailDto email) {
         send(email);
     }

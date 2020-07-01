@@ -120,21 +120,21 @@ public class BookStoreServiceImpl implements IBookStoreService {
     }
 
     @Override
-    public List<Book> getAll() {
-        return bookStoreRepository.findAll();
+    public Page<Book> getAll(Pageable pageable) {
+        return bookStoreRepository.findAll(pageable);
     }
 
     @Override
-    public List<Book> searchBooks(String searchText) {
-        List<Book> searchList = new ArrayList<>();
-        List<Book> bookList = bookStoreRepository.findAll();
-        for (int book = 0; book < bookList.size(); book++) {
-            if (bookList.get(book).getAuthor().toLowerCase().contains(searchText.toLowerCase()) ||
-                    bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())) {
-                searchList.add(bookList.get(book));
-            }
-        }
-        return searchList;
+    public Page<Book> searchBooks(String searchText, Pageable pageable) {
+        return bookStoreRepository.findAllByAuthorContainingOrNameOfBookContaining(searchText, pageable);
     }
-
+//    List<Book> searchList = new ArrayList<>();
+//        List<Book> bookList = bookStoreRepository.findAll();
+//        for (int book = 0; book < bookList.size(); book++) {
+//            if (bookList.get(book).getAuthor().toLowerCase().contains(searchText.toLowerCase()) ||
+//                    bookList.get(book).getNameOfBook().toLowerCase().contains(searchText.toLowerCase())) {
+//                searchList.add(bookList.get(book));
+//            }
+//        }
+//    return searchList;
 }

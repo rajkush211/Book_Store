@@ -94,12 +94,14 @@ public class CartServiceImpl implements ICartService {
                 for (Cart cart : allByUsername) {
                     if (cart.getBookQuantity() == 0)
                         cartRepository.deleteCartByBookIdAndUsername(cart.getBookId(), cart.getUsername());
-                    cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
-                            bookStoreRepository.findById(cart.getBookId()).getAuthor(),
-                            bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
-                            bookStoreRepository.findById(cart.getBookId()).getPicPath(),
-                            bookStoreRepository.findById(cart.getBookId()).getPrice(),
-                            cartRepository.findByBookIdAndUsername(cart.getBookId(), cart.getUsername()).getBookQuantity()));
+                    else {
+                        cartQtyDto.add(new CartQtyDto(bookStoreRepository.findById(cart.getBookId()).getId(),
+                                bookStoreRepository.findById(cart.getBookId()).getAuthor(),
+                                bookStoreRepository.findById(cart.getBookId()).getNameOfBook(),
+                                bookStoreRepository.findById(cart.getBookId()).getPicPath(),
+                                bookStoreRepository.findById(cart.getBookId()).getPrice(),
+                                cartRepository.findByBookIdAndUsername(cart.getBookId(), cart.getUsername()).getBookQuantity()));
+                    }
                 }
             }
         } catch (NullPointerException e) {
@@ -163,19 +165,6 @@ public class CartServiceImpl implements ICartService {
         rabbitMq.sendMessageToQueue(emailDto);
     }
 }
-
-
-//    @Override
-//    public Map<Book, Integer> getAllCartBooks(int userId) {
-//        Map<Book, Integer> cartBooks = new HashMap<>();
-//        List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
-//        for(Cart cart : allByUserId) {
-//            if(cart.getBookQuantity() == 0)
-//                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-//            cartBooks.put(bookStoreRepository.findById(cart.getBookId()), cart.getBookQuantity());
-//        }
-//        return cartBooks;
-//    }
 
 
 
