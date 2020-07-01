@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(value = "*")
 @RequestMapping("/home/customer")
 public class CustomerController {
 

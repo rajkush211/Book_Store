@@ -50,4 +50,8 @@ public class CartController {
     public ResponseEntity<Integer> getOrderId(@RequestHeader String token) throws BookStoreException {
         return new ResponseEntity<Integer>(iCartService.getOrderId(token), HttpStatus.OK);
     }
+    @GetMapping("/getorderid")
+    public ResponseEntity<Integer> getPlacedOrderId(@RequestHeader String token) throws BookStoreException {
+        return new ResponseEntity<Integer>(iCartService.getPlaceOrderId(token), HttpStatus.OK);
+    }
 }

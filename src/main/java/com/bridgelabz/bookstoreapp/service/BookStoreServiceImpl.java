@@ -34,7 +34,7 @@ public class BookStoreServiceImpl implements IBookStoreService {
     private UserRepository userRepository;
 
     @Autowired
-    IElasticsearchService iElasticsearchService;
+    IElasticsearchService elasticsearchService;
 
     @Autowired
     private Environment environment;
@@ -55,8 +55,8 @@ public class BookStoreServiceImpl implements IBookStoreService {
                 book.setPrice(Integer.parseInt(data[5].replaceAll("'", "")));
                 IntStream.range(7, data.length - 1).forEach(column -> data[6] += "," + data[column]);
                 book.setDescription(data[6]);
-                Book books = bookStoreRepository.save(book);
-                iElasticsearchService.createBook(books);
+                bookStoreRepository.save(book);
+                elasticsearchService.createBook(book);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,7 +133,7 @@ public class BookStoreServiceImpl implements IBookStoreService {
     @Override
     public List<Book> searchBooks(String searchText) throws IOException {
         List<Book> searchList = new ArrayList<>();
-        searchList = iElasticsearchService.searchBook(searchText);
+        searchList = elasticsearchService.searchBook(searchText);
         return searchList;
     }
 

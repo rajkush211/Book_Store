@@ -146,6 +146,15 @@ public class CartServiceImpl implements ICartService {
             throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
     }
 
+    @Override
+    public Integer getPlaceOrderId(String token) throws BookStoreException {
+        if (jwtUtils.validateJwtToken(token)) {
+            OrderNumber firstByOrderByIdDesc = orderNumberRepository.findFirstByOrderByIdDesc();
+            return firstByOrderByIdDesc.getOrderId();
+        }else
+            throw new BookStoreException(BookStoreException.ExceptionType.JWT_NOT_VALID, environment.getProperty("JWT_NOT_VALID"));
+    }
+
     private void sendEmailWithOrderDetails(String email, int orderId) {
         emailDto.setTo(email);
         emailDto.setFrom("${EMAIL}");
@@ -154,19 +163,5 @@ public class CartServiceImpl implements ICartService {
         rabbitMq.sendMessageToQueue(emailDto);
     }
 }
-
-
-//    @Override
-//    public Map<Book, Integer> getAllCartBooks(int userId) {
-//        Map<Book, Integer> cartBooks = new HashMap<>();
-//        List<Cart> allByUserId = cartRepository.findAllByUserId(userId);
-//        for(Cart cart : allByUserId) {
-//            if(cart.getBookQuantity() == 0)
-//                cartRepository.deleteCartByBookIdAndUserId(cart.getBookId(), cart.getUserId());
-//            cartBooks.put(bookStoreRepository.findById(cart.getBookId()), cart.getBookQuantity());
-//        }
-//        return cartBooks;
-//    }
-
 
 

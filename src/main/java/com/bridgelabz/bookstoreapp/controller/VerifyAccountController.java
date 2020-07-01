@@ -36,18 +36,18 @@ public class VerifyAccountController {
 
     @Cacheable(value = "Book")
     @GetMapping("/all")
-    public List<Book> getAllBook(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public List<Book> getAllBook(@PageableDefault(page = 0, size = 8) Pageable pageable) {
         System.out.println(environment.getProperty("ALL_BOOKS"));
         return iBookStoreService.getAll(pageable);
     }
 
     @GetMapping("/sort-asc/price")
-    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInAscendingOrderByPrice(@PageableDefault(page = 0, size = 8) Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceAsc(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/sort-desc/price")
-    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 20) Pageable pageable) {
+    public ResponseEntity<Page<Book>> booksInDescendingOrderByPrice(@PageableDefault(page = 0, size = 8) Pageable pageable) {
         return new ResponseEntity(iBookStoreService.getAllBookByPriceDesc(pageable), HttpStatus.OK);
     }
 
