@@ -30,4 +30,8 @@ public interface IBookStoreService {
     List<Book> getAll(Pageable pageable);
 
     List<Book> searchBooks(String searchText)throws IOException;
+
+    String updateBook(int id, BookDto bookDto) throws IOException;
+
+    String deleteBook(int id) throws IOException;
 }

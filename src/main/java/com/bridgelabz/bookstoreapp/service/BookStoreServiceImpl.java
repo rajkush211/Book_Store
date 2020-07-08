@@ -6,21 +6,25 @@ import com.bridgelabz.bookstoreapp.entity.User;
 import com.bridgelabz.bookstoreapp.repository.BookStoreRepository;
 import com.bridgelabz.bookstoreapp.repository.UserRepository;
 import com.bridgelabz.bookstoreapp.utility.ConverterService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.PropertyDescriptor;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Service
+@Transactional
 @PropertySource("classpath:message.properties")
 public class BookStoreServiceImpl implements IBookStoreService {
 
@@ -87,8 +91,13 @@ public class BookStoreServiceImpl implements IBookStoreService {
 
     @Override
     public String addNewBook(BookDto bookDto) {
-        Book book = converterService.convertToBookEntity(bookDto);
-        bookStoreRepository.save(book);
+        try {
+            Book book = converterService.convertToBookEntity(bookDto);
+            bookStoreRepository.save(book);
+            elasticsearchService.createBook(book);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
         return environment.getProperty("BOOK_ADDED");
     }
 
@@ -136,5 +145,28 @@ public class BookStoreServiceImpl implements IBookStoreService {
         searchList = elasticsearchService.searchBook(searchText);
         return searchList;
     }
+    public String updateBook(int id, BookDto bookDto) throws IOException {
+        Book book = converterService.convertToBookEntity(bookDto);
+        Optional<Book> bookFind = Optional.ofNullable(bookStoreRepository.findById(id));
+        if (bookFind.isPresent()) {
+            book.setId(id);
+            bookStoreRepository.save(book);
+            elasticsearchService.updateBook(id, book);
+            return environment.getProperty("UPDATED_BOOK");
+        }else {
+            return environment.getProperty("BOOK_NOT_FOUND");
+        }
+    }
 
+    @Override
+    public String deleteBook(int id) throws IOException {
+        Book bookFind = bookStoreRepository.findById(id);
+        if (bookFind != null) {
+            bookStoreRepository.deleteById(id);
+            elasticsearchService.deleteBook(id);
+            return environment.getProperty("DELETED_BOOK");
+        }else {
+            return environment.getProperty("BOOK_NOT_FOUND");
+        }
+    }
 }
